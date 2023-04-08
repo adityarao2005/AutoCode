@@ -1,15 +1,21 @@
 package com.raos.autocode.core.algorithm;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.raos.autocode.core.ds.DisjointSet;
+import com.raos.autocode.core.ds.Graph;
 import com.raos.autocode.core.ds.Pair;
 
 // Graph theory algorithms
@@ -31,11 +37,11 @@ public interface Traversable<E> {
 			return new LinkedList<>();
 
 		Map<E, Deque<E>> paths = findShortestPaths(start);
-		
+
 		// Return the smallest path
 		return paths.get(end);
 	}
-	
+
 	// Shortest Paths
 	public default Map<E, Deque<E>> findShortestPaths(E start) {
 
@@ -95,19 +101,102 @@ public interface Traversable<E> {
 		for (E e : paths.keySet()) {
 			paths.get(e).add(e);
 		}
-		
+
 		// Return the shortest paths
 		return paths;
 	}
 
 	// Minimum Spanning Tree
+	// Uses Krustals algorithm to create the MST
+	// Uses Disjoint Set Data Structure to speed up performance
+	// Returns a Graph instance
+	default Graph<E> createMST() {
+		// Creates a new instance of the disjoint set
+		DisjointSet<E> set = new DisjointSet<>();
+
+		// Creates a new tree in the form of the graph class
+		Graph<E> mst = new Graph<>();
+
+		// Make our individual disjoint sets from the edges
+		for (E node : getAdjacencyList().keySet())
+			set.makeSet(node);
+
+		// Get all the edges by sorting the weightings map and returning all the keys
+		List<Pair<E, E>> edges = getWeightings().entrySet().stream().sorted(Map.Entry.comparingByValue())
+				.map(Map.Entry::getKey).collect(Collectors.toList());
+
+		// Sort all the edges from least to greatest
+		Collections.sort(edges, Comparator.comparing(getWeightings()::get));
+
+		// For each edge
+		for (Pair<E, E> e : edges) {
+			// Check if they create a cycle by using the union-find algorithm
+			if (set.findSet(e.getFirst()) != set.findSet(e.getSecond())) {
+
+				// If not
+				// Add the edge and merge the two sets
+				mst.addPath(e.getFirst(), e.getSecond(), getWeightings().get(e));
+				set.unionRank(e.getFirst(), e.getSecond());
+			}
+		}
+
+		// Return the mst
+		return mst;
+	}
 
 	// ****** DFS Applications
-
 	// Cycle Detection
+	default boolean hasCycle() {
+		return checkCycle(getAdjacencyList().keySet().iterator().next(), new HashSet<>());
+	}
+
+	private boolean checkCycle(E start, Set<E> stack) {
+		// Checks whether we have already been here
+		// Cycle detection!!!!
+		if (!stack.add(start))
+			return true;
+
+		// Go through its adjacent nodes
+		for (E next : getAdjacencyList().get(start))
+			// Recursively repeat the process
+			// If we have found the end
+			// Return true
+			if (checkCycle(next, stack))
+				return true;
+
+		// Otherwise, backtrack
+		stack.remove(start);
+
+		// Return false
+		return false;
+	}
 
 	// Path Finding
+	default boolean findPath(E start, E end, ArrayDeque<E> path, Set<E> visited) {
+		path.add(start);
+		// Checks whether we have already been here
+		// Cycle detection!!!!
 
-	// Topological Sorting
+		if (!visited.add(start))
+			return false;
+
+		// Check if we are at the end
+		if (start.equals(end)) {
+			return true;
+		}
+
+		// Go through its adjacent nodes
+		for (E next : getAdjacencyList().get(start))
+			// Recursively repeat the process
+			// If we have found the end
+			// Return true
+			if (findPath(next, end, path, visited))
+				return true;
+
+		// Recursively backtrack
+		path.remove(start);
+
+		return false;
+	}
 
 }
