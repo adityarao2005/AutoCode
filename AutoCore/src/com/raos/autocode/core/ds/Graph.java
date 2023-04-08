@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.raos.autocode.core.algorithm.Traversable;
 
@@ -25,6 +26,10 @@ public class Graph<E> implements Traversable<E> {
 		// Constructs the adjacency list and weighting
 		adjList = new HashMap<>();
 		weights = new HashMap<>();
+	}
+
+	public void addPath(E from, E to, int weight) {
+		addPath(from, to, true, weight);
 	}
 
 	// Adds a path, could be bidirectional, with a weighting associated
@@ -140,4 +145,27 @@ public class Graph<E> implements Traversable<E> {
 	public Map<Pair<E, E>, Integer> getWeightings() {
 		return Collections.unmodifiableMap(weights);
 	}
+
+	// Hashcode, kinda useless
+	@Override
+	public int hashCode() {
+		return Objects.hash(adjList, weights);
+	}
+
+	// Checks for equality, only two conditions and both must be satisfied
+	// 1) the adjacency lists must be the same
+	// 2) the weightings must be the same
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Graph<E> other = (Graph<E>) obj;
+		return Objects.equals(adjList, other.adjList) && Objects.equals(weights, other.weights);
+	}
+
 }
