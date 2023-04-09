@@ -1,6 +1,7 @@
 package com.raos.autocode.core.ds;
 
 import java.util.Objects;
+import java.util.Set;
 
 // This class is much needed
 // Holds 2 objects that are somewhat related
@@ -52,7 +53,7 @@ public class Pair<K, V> {
 		// Checks if they are the same class
 		if (getClass() != obj.getClass())
 			return false;
-		
+
 		// Casts it to this object
 		Pair<K, V> other = (Pair<K, V>) obj;
 		// Checks whether the first type and the second type are equal
@@ -69,6 +70,45 @@ public class Pair<K, V> {
 	@Override
 	public String toString() {
 		return "Pair [first=" + first + ", second=" + second + "]";
+	}
+
+	public static class Twin<E> extends Pair<E, E> {
+
+		public Twin(E k, E v) {
+			super(k, v);
+		}
+
+		@Override
+		public String toString() {
+			return "Twin [first=" + getFirst() + ", second=" + getSecond() + "]";
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(toSet());
+		}
+		
+		public Set<E> toSet() {
+			return Set.of(getFirst(), getSecond());
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public boolean equals(Object obj) {
+			// Checks if the memory location is the same
+			if (this == obj)
+				return true;
+			// Checks if the other object is null
+			if (obj == null)
+				return false;
+			// Checks if they are the same class
+			if (getClass() != obj.getClass())
+				return false;
+			
+			Twin<E> other = (Twin<E>) obj;
+			return toSet().equals(other.toSet());
+		}
+
 	}
 
 }

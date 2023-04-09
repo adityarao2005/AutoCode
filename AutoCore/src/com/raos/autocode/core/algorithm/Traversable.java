@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 import com.raos.autocode.core.ds.DisjointSet;
 import com.raos.autocode.core.ds.Graph;
-import com.raos.autocode.core.ds.Pair;
+import com.raos.autocode.core.ds.Pair.Twin;
 
 // Graph theory algorithms
 // Graph theory DS will implement these
@@ -26,7 +26,13 @@ public interface Traversable<E> {
 	Map<E, List<E>> getAdjacencyList();
 
 	// Returns the weightings
-	Map<Pair<E, E>, Integer> getWeightings();
+	Map<Twin<E>, Integer> getWeightings();
+
+	// Gets the edges of the graph
+	default List<Twin<E>> getEdges() {
+		return getWeightings().entrySet().stream().sorted(Map.Entry.comparingByValue()).map(Map.Entry::getKey).distinct()
+				.collect(Collectors.toList());
+	}
 
 	// ***** BFS Applications
 
@@ -61,24 +67,24 @@ public interface Traversable<E> {
 
 		// Create a priority queue
 		// That sorts edges based on the weight
-		PriorityQueue<Pair<E, E>> queue = new PriorityQueue<Pair<E, E>>(
+		PriorityQueue<Twin<E>> queue = new PriorityQueue<Twin<E>>(
 				Comparator.comparing(e -> Objects.requireNonNullElse(getWeightings().get(e), 0)));
 
 		// Add the zeroth edge
-		queue.add(new Pair<>(null, start));
+		queue.add(new Twin<>(null, start));
 
 		// While the queue of edges are not empty
 		while (!queue.isEmpty()) {
 
 			// Get the edge
-			Pair<E, E> oPair = queue.poll();
+			Twin<E> oPair = queue.poll();
 			// Get the last endpoint
 			E current = oPair.getSecond();
 
 			// Go through all edges relating to that endpoint
 			for (E next : getAdjacencyList().get(current)) {
 				// Create the edge
-				Pair<E, E> cPair = new Pair<>(current, next);
+				Twin<E> cPair = new Twin<>(current, next);
 
 				// Calculate the total distance
 				int calc = distance.get(current) + getWeightings().get(cPair);
@@ -122,14 +128,13 @@ public interface Traversable<E> {
 			set.makeSet(node);
 
 		// Get all the edges by sorting the weightings map and returning all the keys
-		List<Pair<E, E>> edges = getWeightings().entrySet().stream().sorted(Map.Entry.comparingByValue())
-				.map(Map.Entry::getKey).collect(Collectors.toList());
+		List<Twin<E>> edges = getEdges();
 
 		// Sort all the edges from least to greatest
 		Collections.sort(edges, Comparator.comparing(getWeightings()::get));
 
 		// For each edge
-		for (Pair<E, E> e : edges) {
+		for (Twin<E> e : edges) {
 			// Check if they create a cycle by using the union-find algorithm
 			if (set.findSet(e.getFirst()) != set.findSet(e.getSecond())) {
 
@@ -173,12 +178,13 @@ public interface Traversable<E> {
 
 	// Path Finding
 	default boolean findPath(E start, E end, ArrayDeque<E> path, Set<E> visited) {
-		path.add(start);
 		// Checks whether we have already been here
 		// Cycle detection!!!!
 
 		if (!visited.add(start))
 			return false;
+
+		path.add(start);
 
 		// Check if we are at the end
 		if (start.equals(end)) {

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.raos.autocode.core.algorithm.Traversable;
+import com.raos.autocode.core.ds.Pair.Twin;
 
 // Graph theory introduced
 // Uses graph theory concepts to outline a graph object
@@ -19,7 +20,7 @@ public class Graph<E> implements Traversable<E> {
 
 	// Many to many relationship being used
 	private Map<E, List<E>> adjList;
-	private Map<Pair<E, E>, Integer> weights;
+	private Map<Twin<E>, Integer> weights;
 
 	// Constructs the graph object
 	public Graph() {
@@ -42,7 +43,7 @@ public class Graph<E> implements Traversable<E> {
 		// Adds a path from "from" to "to"
 		adjList.get(from).add(to);
 		// Adds associated weighting
-		weights.put(new Pair<>(from, to), weight);
+		weights.put(new Twin<>(from, to), weight);
 
 		// If it is directed, then add the values in the backward direction
 		if (bidirectional) {
@@ -53,7 +54,7 @@ public class Graph<E> implements Traversable<E> {
 			// Adds a path from "to" to "from"
 			adjList.get(to).add(from);
 			// Adds associated weighting
-			weights.put(new Pair<>(to, from), weight);
+			weights.put(new Twin<>(to, from), weight);
 		}
 
 	}
@@ -86,7 +87,7 @@ public class Graph<E> implements Traversable<E> {
 	// No need for directed or undirected, that will make this messy
 	public int getWeighting(E from, E to) {
 		// Returns the weights
-		return weights.get(new Pair<>(from, to));
+		return weights.get(new Twin<>(from, to));
 	}
 
 	// Sets weighting
@@ -94,11 +95,11 @@ public class Graph<E> implements Traversable<E> {
 	public void setWeighting(E from, E to, boolean bidirectional, int weight) {
 
 		// Sets weighting in the "from" to "to" direction
-		weights.replace(new Pair<>(from, to), weight);
+		weights.replace(new Twin<>(from, to), weight);
 
 		// Sets it in the other direction only if bidirectional
 		if (bidirectional) {
-			weights.replace(new Pair<>(to, from), weight);
+			weights.replace(new Twin<>(to, from), weight);
 		}
 	}
 
@@ -111,7 +112,7 @@ public class Graph<E> implements Traversable<E> {
 				// Remove the path
 				adjList.get(from).remove(to);
 				// Remove the weighting associated
-				weights.remove(new Pair<>(from, to));
+				weights.remove(new Twin<>(from, to));
 			}
 		}
 
@@ -123,7 +124,7 @@ public class Graph<E> implements Traversable<E> {
 				// Remove the path
 				adjList.get(to).remove(from);
 				// Remove the weighting associated
-				weights.remove(new Pair<>(to, from));
+				weights.remove(new Twin<>(to, from));
 
 			}
 		}
@@ -142,7 +143,7 @@ public class Graph<E> implements Traversable<E> {
 	}
 
 	// Returns an immutable weightings map
-	public Map<Pair<E, E>, Integer> getWeightings() {
+	public Map<Twin<E>, Integer> getWeightings() {
 		return Collections.unmodifiableMap(weights);
 	}
 
