@@ -4,7 +4,7 @@ The Auto Code framework: Framework to reinvent the wheel - Inspired by the Sprin
 First, we will be building a framework to specialize in Basic Project Programming Principals (Mostly of this (Implement the Basic Design Patterns)) and any additives like Graph Theory. This will become our Core Framework and will have all the useful utility functions required to build furthur.
 
 List of Potential Projects:
- - Auto Core
+ - Auto Core: https://github.com/adityarao2005/AutoCode.AutoCore/tree/master/AutoCore
  - Auto Deep
  - Auto AI
  - Auto Math
