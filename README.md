@@ -12,14 +12,10 @@ List of Potential Projects:
  - Auto Net - Extended API for accessing resources across the NET and socket programming
  - Auto HTTP - Extended API for accessing resources across Net specifically HTTP
  - Auto UI - GUI framework
- - Auto ML - Machine Learning framework
  - Auto Security - Security framework
- - Auto Data - Database framework
- - Auto OP - (Forgot what this was for)
- - Auto I/O - Extended API for I/O handling
+ - Auto Data - Database framework and Connectivity
  - Auto Graphics - Graphics framework for Auto UI
  - Auto Game - Game Library for Auto UI and Graphics
- - Auto Utils - Other specific utilities
  - Auto Web - Creation of servers and servlets
  - Auto Expr - Expression parsing
  
