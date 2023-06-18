@@ -25,5 +25,3 @@ List of Potential Projects:
  
  
 This is my last big project from highschool and is going to be a project which I hopefully continue into University.
-
-Links to the repositories provided
