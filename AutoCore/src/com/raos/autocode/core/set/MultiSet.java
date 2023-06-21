@@ -1,62 +1,54 @@
 package com.raos.autocode.core.set;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
-
-class MultiSet<T extends Number & Comparable<T>> extends NumberSet<T> {
+class MultiSet extends NumberSet {
 	// Sub sets
-	private List<NumberSet<T>> subsets;
+	private Set<SingletonSet> subsets;
 
+	// Private no-arg constructor
 	private MultiSet() {
-		subsets = new ArrayList<>();
+		subsets = new TreeSet<>(Comparator.comparing(SingletonSet::getLowerBound));
 	}
 
-	//
-	public MultiSet(SingletonSet<T> set1, SingletonSet<T> set2) {
+	// Constructors
+	public MultiSet(SingletonSet set1, SingletonSet set2) {
 		this();
 		subsets.add(set1);
 		subsets.add(set2);
 	}
 
-	//
-	public MultiSet(SingletonSet<T> set1, MultiSet<T> set2) {
+	// Singleton set + multiset
+	public MultiSet(SingletonSet set1, MultiSet set2) {
 		this();
 		subsets.add(set1);
+		subsets.addAll(set2.subsets);
 
-		recursiveSetAddition(set2);
+	}
+
+	// singleton set + multiset
+	public MultiSet(MultiSet set1, SingletonSet set2) {
+		this(set2, set1);
+
 	}
 
 	//
-	public MultiSet(MultiSet<T> set1, SingletonSet<T> set2) {
+	public MultiSet(MultiSet set1, MultiSet set2) {
 		this();
+		subsets.addAll(set1.subsets);
+		subsets.addAll(set2.subsets);
 
-		recursiveSetAddition(set1);
-		subsets.add(set2);
-	}
-
-	//
-	public MultiSet(MultiSet<T> set1, MultiSet<T> set2) {
-		this();
-		recursiveSetAddition(set1);
-		recursiveSetAddition(set2);
-
-	}
-
-	private void recursiveSetAddition(MultiSet<T> set) {
-		for (NumberSet<T> subset : set.subsets) {
-			if (subset instanceof MultiSet)
-				recursiveSetAddition((MultiSet<T>) subset);
-			else
-				subsets.add(subset);
-		}
 	}
 
 	// Checks if the subsets are empty
 	@Override
 	public boolean isEmpty() {
 		// Check if all the subsets are empty
-		for (NumberSet<T> set : subsets)
+		for (NumberSet set : subsets)
 			if (!set.isEmpty())
 				return false;
 
@@ -65,10 +57,10 @@ class MultiSet<T extends Number & Comparable<T>> extends NumberSet<T> {
 	}
 
 	@Override
-	public boolean contains(T t) {
+	public boolean contains(Double t) {
 
 		// Check if any of the subsets contain the value
-		for (NumberSet<T> set : subsets)
+		for (NumberSet set : subsets)
 			if (set.contains(t))
 				return true;
 

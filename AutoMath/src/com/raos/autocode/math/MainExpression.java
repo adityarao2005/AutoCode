@@ -3,17 +3,30 @@ package com.raos.autocode.math;
 import com.raos.autocode.math.variable.Scope;
 
 // A main expression with any other expression as a base, acts as a wrapper
-public class MainExpression extends ExpressionBase {
+public class MainExpression implements Expressable, DifferentiableExpression {
 	// Return the main expression
-	private ExpressionBase base;
+	private Expression base;
+
+	// Create the scopes
+	private Scope variableScope;
+	private Scope constantScope;
 
 	// Wrap the expression
-	public MainExpression(ExpressionBase base) {
+	public MainExpression(Expression base) {
 		// Set the base expression
 		this.base = base;
-		
-		// Set scope as default scope
-		setScope(new Scope());
+
+		// Create the scopes
+		constantScope = new Scope();
+		variableScope = new Scope();
+
+		// Initialize the constant scope
+		constantScope.declareValue("PI", Expression.PI);
+		constantScope.declareValue("E", Expression.E);
+
+		// Set the expression to this
+		base.setMainExpression(this);
+
 	}
 
 	// Return the result
@@ -30,10 +43,21 @@ public class MainExpression extends ExpressionBase {
 		return base.differentiate(name);
 	}
 
-	// Set scope
-	@Override
-	protected void setScopeForChildren() {
-		base.setScope(getScope());
+	// Accessors and Mutators
+	public Scope getVariableScope() {
+		return variableScope;
+	}
+
+	public Scope getConstantScope() {
+		return constantScope;
+	}
+
+	public void setVariableScope(Scope variableScope) {
+		this.variableScope = variableScope;
+	}
+
+	public void setConstantScope(Scope constantScope) {
+		this.constantScope = constantScope;
 	}
 
 }

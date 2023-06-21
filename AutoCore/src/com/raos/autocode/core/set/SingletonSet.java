@@ -1,7 +1,9 @@
 package com.raos.autocode.core.set;
 
+import java.util.Objects;
+
 // Singleton set
-class SingletonSet<T extends Number & Comparable<T>> extends NumberSet<T> {
+abstract class SingletonSet extends NumberSet {
 	// Upper bound limit
 	private Limit upperBound;
 	// Lower bound limit
@@ -44,7 +46,7 @@ class SingletonSet<T extends Number & Comparable<T>> extends NumberSet<T> {
 	}
 
 	@Override
-	public boolean contains(T number) {
+	public boolean contains(Double number) {
 
 		FiniteLimit value = new FiniteLimit(number);
 
@@ -62,6 +64,28 @@ class SingletonSet<T extends Number & Comparable<T>> extends NumberSet<T> {
 
 		// Otherwise return true
 		return true;
+	}
+
+	// Hashcode
+	@Override
+	public int hashCode() {
+		return Objects.hash(lowerBound, lowerInclusive, upperBound, upperInclusive);
+	}
+
+	// Equals
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		
+		SingletonSet other = (SingletonSet) obj;
+		
+		return Objects.equals(lowerBound, other.lowerBound) && lowerInclusive == other.lowerInclusive
+				&& Objects.equals(upperBound, other.upperBound) && upperInclusive == other.upperInclusive;
 	}
 
 }

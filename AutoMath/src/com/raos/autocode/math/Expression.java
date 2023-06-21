@@ -1,10 +1,9 @@
 package com.raos.autocode.math;
 
-import com.raos.autocode.math.operation.OperationalExpression;
-import com.raos.autocode.math.variable.Scope;
+import com.raos.autocode.math.operation.OperationalExpression.Operations;
 
 // New API to parse and apply mathematical operations
-public interface Expression extends DifferentiableExpression {
+public interface Expression extends DifferentiableExpression, Expressable {
 	// Most important real constants
 	public static final Expression ONE = Expression.ofConstant(1);
 	public static final Expression NEG_ONE = Expression.ofConstant(-1);
@@ -12,15 +11,10 @@ public interface Expression extends DifferentiableExpression {
 	public static final Expression PI = Expression.ofConstant(Math.PI);
 	public static final Expression E = Expression.ofConstant(Math.E);
 
-	// Evaluates the expression and retsetScopeurns the result in the form given by
-	// the
-	// NumberFormat interface
-	<T> T result(NumberFormat<T> format);
+	// Main Expressions
+	public MainExpression getMainExpression();
 
-	// Get and set variable scope
-	Scope getScope();
-
-	void setScope(Scope scope);
+	public void setMainExpression(MainExpression mainExpression);
 
 	// Creates a new constant expression
 	public static Expression ofConstant(double value) {
@@ -37,9 +31,14 @@ public interface Expression extends DifferentiableExpression {
 		return new ConstantExpression(expr.eval());
 	}
 
+	// Turns expression to constant
+	public static Expression getConstant(String constantName, MainExpression main) {
+		return toConstant(main.getConstantScope().getValue(constantName));
+	}
+
 	// Negates the expression,
 	public static Expression negate(Expression expr) {
-		return OperationalExpression.multiply(NEG_ONE, expr);
+		return Operations.multiply(NEG_ONE, expr);
 	}
 
 }

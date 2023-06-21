@@ -1,11 +1,10 @@
 package com.raos.autocode.math.operation;
 
 import com.raos.autocode.math.Expression;
-import com.raos.autocode.math.ExpressionBase;
 import com.raos.autocode.math.NumberFormat;
 
 // Addition expression - represents the add operation between 2 expressions
-class AddExpression extends ExpressionBase implements OperationalExpression {
+class AddExpression extends OperationalExpression {
 	// Fields
 	private Expression first;
 	private Expression second;
@@ -15,6 +14,7 @@ class AddExpression extends ExpressionBase implements OperationalExpression {
 		// Set the values
 		this.first = first;
 		this.second = second;
+
 	}
 
 	// Return the result of their addition
@@ -40,8 +40,8 @@ class AddExpression extends ExpressionBase implements OperationalExpression {
 	@Override
 	protected void setScopeForChildren() {
 		// Set the scopes
-		first.setScope(getScope());
-		second.setScope(getScope());
+		first.setMainExpression(getMainExpression());
+		second.setMainExpression(getMainExpression());
 	}
 
 }

@@ -1,25 +1,21 @@
 package com.raos.autocode.math.operation;
 
 import com.raos.autocode.math.Expression;
-import com.raos.autocode.math.ExpressionBase;
 import com.raos.autocode.math.NumberFormat;
 
 // Logarithimic expression - represents the natural logarithm
-class LogarithimicExpression extends ExpressionBase implements OperationalExpression {
-	// Fields
-	private Expression value;
+class LogarithimicExpression extends FunctionalExpression {
 
 	// Constructor
 	public LogarithimicExpression(Expression value) {
-		// Set the values
-		this.value = value;
+		super(value);
 	}
 
 	// Return the power
 	@Override
 	public <T> T result(NumberFormat<T> format) {
 		// Take the exponent of the base to the exponent and format them
-		return format.format(Math.log(value.eval()));
+		return format.format(Math.log(getValue().eval()));
 	}
 
 	// Return the differentiated expression
@@ -29,15 +25,19 @@ class LogarithimicExpression extends ExpressionBase implements OperationalExpres
 		// f'(x) = g'(x) / g(x)
 		return new DivisionExpression(
 				// g'(x)
-				value.differentiate(name),
+				getValue().differentiate(name),
 				// g(x)
-				value);
+				getValue());
 	}
 
-	// Set the scope of the two sub functions
+	// Get the value
+	public Expression getValue() {
+		return getParam(0);
+	}
+
+	// Expression
 	@Override
-	protected void setScopeForChildren() {
-		// Set the scopes
-		value.setScope(getScope());
+	public String getName() {
+		return "log";
 	}
 }

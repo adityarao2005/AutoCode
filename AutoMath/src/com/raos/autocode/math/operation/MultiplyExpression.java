@@ -1,11 +1,10 @@
 package com.raos.autocode.math.operation;
 
 import com.raos.autocode.math.Expression;
-import com.raos.autocode.math.ExpressionBase;
 import com.raos.autocode.math.NumberFormat;
 
 // Multiply expression - represents the multiplication operation between 2 expressions
-class MultiplyExpression extends ExpressionBase implements OperationalExpression {
+class MultiplyExpression extends OperationalExpression {
 	// Fields
 	private Expression first;
 	private Expression second;
@@ -49,7 +48,7 @@ class MultiplyExpression extends ExpressionBase implements OperationalExpression
 	@Override
 	protected void setScopeForChildren() {
 		// Set the scopes
-		first.setScope(getScope());
-		second.setScope(getScope());
+		first.setMainExpression(getMainExpression());
+		second.setMainExpression(getMainExpression());
 	}
 }

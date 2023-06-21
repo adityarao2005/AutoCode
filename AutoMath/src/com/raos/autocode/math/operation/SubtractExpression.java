@@ -1,11 +1,10 @@
 package com.raos.autocode.math.operation;
 
 import com.raos.autocode.math.Expression;
-import com.raos.autocode.math.ExpressionBase;
 import com.raos.autocode.math.NumberFormat;
 
 // Subtraction expression - represents the subtract operation between 2 expressions
-class SubtractExpression extends ExpressionBase implements OperationalExpression {
+class SubtractExpression extends OperationalExpression {
 	// Fields
 	private Expression first;
 	private Expression second;
@@ -40,7 +39,7 @@ class SubtractExpression extends ExpressionBase implements OperationalExpression
 	@Override
 	protected void setScopeForChildren() {
 		// Set the scopes
-		first.setScope(getScope());
-		second.setScope(getScope());
+		first.setMainExpression(getMainExpression());
+		second.setMainExpression(getMainExpression());
 	}
 }

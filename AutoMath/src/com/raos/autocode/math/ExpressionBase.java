@@ -1,28 +1,21 @@
 package com.raos.autocode.math;
 
-import com.raos.autocode.math.variable.Scope;
-
 // Creates a new expression base
 public abstract class ExpressionBase implements Expression {
 
-	// Scope of object
-	private Scope scope;
+	// Link to main expression
+	private MainExpression mainExpression;
 
-	// Retrieve the scope
-	public final Scope getScope() {
-		return scope;
+	public final MainExpression getMainExpression() {
+		return mainExpression;
 	}
 
-	// Set the scope
-	public final void setScope(Scope scope) {
-		// Set the scope for this object
-		this.scope = scope;
+	public final void setMainExpression(MainExpression mainExpression) {
+		this.mainExpression = mainExpression;
 
-		// Set scope for child expressions
 		setScopeForChildren();
 	}
 
-	// Set scope for child expressions
 	protected abstract void setScopeForChildren();
 
 	// Default method

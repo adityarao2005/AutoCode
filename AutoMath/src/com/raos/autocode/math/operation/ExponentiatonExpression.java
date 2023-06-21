@@ -1,11 +1,10 @@
 package com.raos.autocode.math.operation;
 
 import com.raos.autocode.math.Expression;
-import com.raos.autocode.math.ExpressionBase;
 import com.raos.autocode.math.NumberFormat;
 
 // Exponentiation expression - represents the power operation between 2 expressions
-class ExponentiatonExpression extends ExpressionBase implements OperationalExpression {
+class ExponentiatonExpression extends OperationalExpression {
 	// Fields
 	private Expression base;
 	private Expression exponent;
@@ -54,7 +53,7 @@ class ExponentiatonExpression extends ExpressionBase implements OperationalExpre
 	@Override
 	protected void setScopeForChildren() {
 		// Set the scopes
-		base.setScope(getScope());
-		exponent.setScope(getScope());
+		base.setMainExpression(getMainExpression());
+		exponent.setMainExpression(getMainExpression());
 	}
 }

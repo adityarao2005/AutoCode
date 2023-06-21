@@ -1,11 +1,10 @@
 package com.raos.autocode.math.operation;
 
 import com.raos.autocode.math.Expression;
-import com.raos.autocode.math.ExpressionBase;
 import com.raos.autocode.math.NumberFormat;
 
 // Division expression - represents the division operation between 2 expressions
-class DivisionExpression extends ExpressionBase implements OperationalExpression {
+class DivisionExpression extends OperationalExpression {
 	// Fields
 	private Expression numerator;
 	private Expression denomanator;
@@ -49,7 +48,7 @@ class DivisionExpression extends ExpressionBase implements OperationalExpression
 	@Override
 	protected void setScopeForChildren() {
 		// Set the scopes
-		numerator.setScope(getScope());
-		denomanator.setScope(getScope());
+		numerator.setMainExpression(getMainExpression());
+		denomanator.setMainExpression(getMainExpression());
 	}
 }

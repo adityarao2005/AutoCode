@@ -1,5 +1,7 @@
 package com.raos.autocode.math.variable;
 
+import java.util.Objects;
+
 import com.raos.autocode.math.Expression;
 import com.raos.autocode.math.ExpressionBase;
 import com.raos.autocode.math.NumberFormat;
@@ -17,8 +19,16 @@ public class VariableExpression extends ExpressionBase {
 	// Returns result of the variable
 	@Override
 	public <T> T result(NumberFormat<T> format) {
+		// Get expression
+		Expression expr = getMainExpression().getVariableScope().getValue(name);
+
+		// Error check
+		if (Objects.isNull(expr)) {
+			throw new VariableNotFoundException(name);
+		}
+
 		// Return result
-		return format.format(getScope().getVariable(name));
+		return format.format(expr.eval());
 	}
 
 	// Differentiate

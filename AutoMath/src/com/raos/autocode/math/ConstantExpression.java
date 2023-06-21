@@ -8,7 +8,6 @@ class ConstantExpression extends ExpressionBase {
 	// Constructor
 	public ConstantExpression(double value) {
 		this.value = value;
-		
 	}
 
 	// Returns result transposed
@@ -24,7 +23,6 @@ class ConstantExpression extends ExpressionBase {
 		return ZERO;
 	}
 
-	// Does nothing cuz there isnt anything to set
 	@Override
 	protected void setScopeForChildren() {
 	}

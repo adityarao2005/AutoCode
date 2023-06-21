@@ -3,37 +3,48 @@ package com.raos.autocode.math.variable;
 import java.util.HashMap;
 import java.util.Map;
 
-// Represents a scope for the variables
-public class Scope {
+import com.raos.autocode.math.Expression;
 
-	// Variable map
-	// TODO: Change implementation of this to: Map<String, Expression>
+// Represents a scope for the values
+public final class Scope {
+
+	// Value map
 	// for regular expressions
-	private Map<String, Double> variableMap;
+	private Map<String, Expression> valueMap;
 
 	// Constructor
 	public Scope() {
-		variableMap = new HashMap<>();
+		valueMap = new HashMap<>();
 	}
 
-	// Create a variable
-	public void createVariable(String variableName) {
-		variableMap.put(variableName, Double.NaN);
+	// Create a value
+	public void declareValue(String valueName) {
+		declareValue(valueName, null);
 	}
 
-	// Set a value to the variable
-	public void setVariable(String variableName, double value) {
-		variableMap.replace(variableName, value);
+	// Create a value
+	public void declareValue(String valueName, Expression value) {
+		valueMap.put(valueName, value);
 	}
 
-	// Remove the variable
-	public void removeVariable(String variableName) {
-		variableMap.remove(variableName);
+	// Set a value to the value
+	public void setValue(String valueName, Expression value) {
+		valueMap.replace(valueName, value);
+	}
+
+	// Remove the value
+	public void removeValue(String valueName) {
+		valueMap.remove(valueName);
 	}
 
 	// Get value
-	public double getVariable(String variableName) {
-		return variableMap.get(variableName);
+	public Expression getValue(String valueName) {
+		return valueMap.get(valueName);
+	}
+
+	// Check exists for value
+	public boolean valueExists(String valueName) {
+		return valueMap.get(valueName) != null;
 	}
 
 }
