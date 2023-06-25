@@ -29,7 +29,7 @@ class MultiplyExpression extends OperationalExpression {
 		// d/dx( f(x) * g(x) ) = f'(x) * g(x) + g'(x) * f(x)
 
 		// f'(x) * g(x) + g'(x) * f(x)
-		return new AddExpression(
+		return Operations.add(
 				// f'(x) * g(x)
 				new MultiplyExpression(
 						// f'(x)

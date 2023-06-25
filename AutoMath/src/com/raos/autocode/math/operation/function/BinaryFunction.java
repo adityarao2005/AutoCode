@@ -1,23 +1,23 @@
-package com.raos.autocode.math.operation;
+package com.raos.autocode.math.operation.function;
 
-import java.util.function.UnaryOperator;
+import java.util.function.BinaryOperator;
 
 import com.raos.autocode.math.Expression;
 import com.raos.autocode.math.NumberFormat;
 
 // Represents a function with a value that can be based
-public class UnaryFunction extends FunctionalExpression {
+public class BinaryFunction extends FunctionalExpression {
 	// Function value
 	private Expression value;
 	private String name;
 
 	// Constructor
-	public UnaryFunction(String name, Expression expr, UnaryOperator<Expression> function) {
+	public BinaryFunction(String name, Expression first, Expression second, BinaryOperator<Expression> function) {
 		// Set expr as parameter
-		super(expr);
+		super(first, second);
 
 		// Function
-		this.value = function.apply(expr);
+		this.value = function.apply(first, second);
 	}
 
 	// Differentiates

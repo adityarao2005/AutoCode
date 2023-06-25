@@ -2,6 +2,7 @@ package com.raos.autocode.math.operation;
 
 import com.raos.autocode.math.Expression;
 import com.raos.autocode.math.NumberFormat;
+import com.raos.autocode.math.operation.function.Functions;
 
 // Exponentiation expression - represents the power operation between 2 expressions
 class ExponentiatonExpression extends OperationalExpression {
@@ -30,21 +31,21 @@ class ExponentiatonExpression extends OperationalExpression {
 		// ln( f(x) ) = g(x) ln ( h(x) )
 		// f'(x) / f(x) = g'(x) * ln( h(x) ) + d/dx( ln( h(x) ) ) * g(x)
 		// f'(x) = (h(x) ^ g(x)) * ( g'(x) * ln( h(x) ) + d/dx( ln( h(x) ) ) * g(x) )
-		return new MultiplyExpression(
+		return Operations.multiply(
 				// h(x) ^ g(x)
 				this,
 				// ( g'(x) * ln( h(x) )) + (h'(x) * g(x) / h(x) )
-				new AddExpression(
+				Operations.add(
 						// g'(x) * ln( h(x) )
-						new MultiplyExpression(
+						Operations.multiply(
 								// g'(x)
 								exponent.differentiate(name),
 								// ln( h(x) )
-								new LogarithimicExpression(base)),
+								Functions.ln(base)),
 						// d/dx( ln( h(x) ) ) * g(x)
-						new MultiplyExpression(
+						Operations.multiply(
 								// d/dx( ln( h(x) ) )
-								new LogarithimicExpression(base).differentiate(name),
+								Functions.ln(base).differentiate(name),
 								// g(x)
 								exponent)));
 	}

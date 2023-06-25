@@ -9,29 +9,28 @@ public class MainExpression implements Expressable, DifferentiableExpression {
 
 	// Create the scopes
 	private Scope variableScope;
-	private Scope constantScope;
 
 	// Wrap the expression
-	public MainExpression(Expression base) {
+	public MainExpression() {
+
+		// Create variable scope
+		variableScope = new Scope();
+
+	}
+
+	public void setBase(Expression base) {
 		// Set the base expression
 		this.base = base;
 
-		// Create the scopes
-		constantScope = new Scope();
-		variableScope = new Scope();
-
-		// Initialize the constant scope
-		constantScope.declareValue("PI", Expression.PI);
-		constantScope.declareValue("E", Expression.E);
-
 		// Set the expression to this
 		base.setMainExpression(this);
-
 	}
 
 	// Return the result
 	@Override
 	public <T> T result(NumberFormat<T> format) {
+		if (base == null)
+			throw new NullPointerException("No base expression defined");
 		// Call the base format
 		return base.result(format);
 	}
@@ -48,16 +47,8 @@ public class MainExpression implements Expressable, DifferentiableExpression {
 		return variableScope;
 	}
 
-	public Scope getConstantScope() {
-		return constantScope;
-	}
-
 	public void setVariableScope(Scope variableScope) {
 		this.variableScope = variableScope;
-	}
-
-	public void setConstantScope(Scope constantScope) {
-		this.constantScope = constantScope;
 	}
 
 }

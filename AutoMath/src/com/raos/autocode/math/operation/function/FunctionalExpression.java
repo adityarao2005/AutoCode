@@ -1,6 +1,7 @@
-package com.raos.autocode.math.operation;
+package com.raos.autocode.math.operation.function;
 
 import com.raos.autocode.math.Expression;
+import com.raos.autocode.math.operation.OperationalExpression;
 
 // A generic implementation for a functional expression
 public abstract class FunctionalExpression extends OperationalExpression {

@@ -1,13 +1,14 @@
-package com.raos.autocode.math.operation;
+package com.raos.autocode.math.operation.function;
 
 import com.raos.autocode.math.Expression;
 import com.raos.autocode.math.NumberFormat;
+import com.raos.autocode.math.operation.Operations;
 
 // Logarithimic expression - represents the natural logarithm
-class LogarithimicExpression extends FunctionalExpression {
+class LogarithimicFunction extends FunctionalExpression {
 
 	// Constructor
-	public LogarithimicExpression(Expression value) {
+	public LogarithimicFunction(Expression value) {
 		super(value);
 	}
 
@@ -23,7 +24,7 @@ class LogarithimicExpression extends FunctionalExpression {
 	public Expression differentiate(String name) {
 		// f(x) = ln( g(x) )
 		// f'(x) = g'(x) / g(x)
-		return new DivisionExpression(
+		return Operations.divide(
 				// g'(x)
 				getValue().differentiate(name),
 				// g(x)

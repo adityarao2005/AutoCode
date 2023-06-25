@@ -1,7 +1,8 @@
-package com.raos.autocode.math.operation;
+package com.raos.autocode.math.operation.function;
 
 import com.raos.autocode.math.Expression;
 import com.raos.autocode.math.NumberFormat;
+import com.raos.autocode.math.operation.Operations;
 
 // Wrapper for trignometric functions
 interface TrignometricFunctions {
@@ -45,7 +46,7 @@ interface TrignometricFunctions {
 		@Override
 		public Expression differentiate(String name) {
 			// d/dx(sin[f(x)]) = cos[f(x)] * f'(x)
-			return new MultiplyExpression(
+			return Operations.multiply(
 					// cos[f(x)]
 					new CosExpression(
 							// f(x)
@@ -80,7 +81,7 @@ interface TrignometricFunctions {
 		@Override
 		public Expression differentiate(String name) {
 			// d/dx(cos[f(x)]) = -sin[f(x)] * f'(x)
-			return new MultiplyExpression(
+			return Operations.multiply(
 					// -sin[f(x)]
 					Expression.negate(
 							// sin[f(x)]

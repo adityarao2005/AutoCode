@@ -7,10 +7,14 @@ import com.raos.autocode.math.MainExpression;
 public interface ExpressionParser {
 
 	// Method to turn string to expression
-	Expression parse(String str);
+	public Expression parse(String str);
 
 	// Main expression
 	public default MainExpression parseMain(String str) {
-		return new MainExpression(parse(str));
+		MainExpression expr = new MainExpression();
+
+		expr.setBase(parse(str));
+		
+		return expr;
 	}
 }

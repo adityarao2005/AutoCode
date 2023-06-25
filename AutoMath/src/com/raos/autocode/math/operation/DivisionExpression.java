@@ -31,13 +31,13 @@ class DivisionExpression extends OperationalExpression {
 		// (f'(x)*g(x) - g'(x)*f(x))/(g(x))^2
 		return new DivisionExpression(
 				// (f'(x)*g(x) - g'(x)*f(x))
-				new SubtractExpression(
+				Operations.subtract(
 						// f'(x) * g(x)
-						new MultiplyExpression(numerator.differentiate(name), denomanator),
+						Operations.multiply(numerator.differentiate(name), denomanator),
 						// g'(x) * f(x)
-						new MultiplyExpression(denomanator.differentiate(name), numerator)),
+						Operations.multiply(denomanator.differentiate(name), numerator)),
 				// (g(x))^2
-				new ExponentiatonExpression(
+				Operations.power(
 						// g(x)
 						denomanator,
 						// 2
