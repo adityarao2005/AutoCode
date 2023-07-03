@@ -74,6 +74,7 @@ public class Pair<K, V> {
 	}
 
 	// A twin class to describe two identical values
+	@Deprecated
 	public static class Twin<E> extends Pair<E, E> {
 
 		public Twin(E k, E v) {
@@ -91,7 +92,7 @@ public class Pair<K, V> {
 		public int hashCode() {
 			return Objects.hash(toSet());
 		}
-		
+
 		// Returns a set
 		public Set<E> toSet() {
 			return Set.of(getFirst(), getSecond());
@@ -109,7 +110,7 @@ public class Pair<K, V> {
 			// Checks if they are the same class
 			if (getClass() != obj.getClass())
 				return false;
-			
+
 			Twin<E> other = (Twin<E>) obj;
 			return toSet().equals(other.toSet());
 		}

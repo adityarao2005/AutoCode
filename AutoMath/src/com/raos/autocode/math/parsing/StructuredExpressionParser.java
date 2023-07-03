@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import com.raos.autocode.math.Expression;
 import com.raos.autocode.math.operation.function.Functions;
+import com.raos.autocode.math.util.BalancingAlgorithm;
 import com.raos.autocode.math.operation.Operations;
 import com.raos.autocode.math.operation.function.FunctionalExpression;
 import com.raos.autocode.math.variable.VariableExpression;
@@ -147,7 +148,7 @@ public class StructuredExpressionParser extends PrefixExpressionParser {
 		case "divide":
 		case "exp": {
 			// Perform balancing algorithm
-			String[] split = balancingSplit(internalArgs, '{', '}', ',');
+			String[] split = BalancingAlgorithm.balancingSplit(internalArgs, '{', '}', ',');
 
 			// Substring to get the left expression
 			String left = split[0];
@@ -199,7 +200,7 @@ public class StructuredExpressionParser extends PrefixExpressionParser {
 				Function<Expression[], FunctionalExpression> function = Functions.getFunction(name);
 
 				// Create the array
-				String[] params = balancingSplit(paramsStr, '{', '}', ',');
+				String[] params = BalancingAlgorithm.balancingSplit(paramsStr, '{', '}', ',');
 
 				// Create the expression
 				expression = function.apply(Arrays.stream(params).map(this::parse).toArray(Expression[]::new));
@@ -221,46 +222,4 @@ public class StructuredExpressionParser extends PrefixExpressionParser {
 		return expression;
 	}
 
-	// Balancing split
-	private String[] balancingSplit(String str, char open, char closed, char split) {
-		// return the array
-		List<String> values = new ArrayList<>();
-
-		// Balancing algorithm
-		int balance = 0;
-		int startExpr = 0;
-
-		// loop over all the characters in the loop
-		for (int i = 0; i < str.length(); i++) {
-			// if the character is an open brace, then increase the balance
-			if (str.charAt(i) == open) {
-				balance++;
-			} else {
-				// If the character is a closed brace
-				if (str.charAt(i) == closed) {
-					// if the balance is greater than 0, then decrease the balance
-					if (balance > 0)
-						balance--;
-					// Otherwise throw an error
-					else {
-						throw new ExpressionParsingException(String.format("Invalid character found at index: %d", i));
-					}
-
-					// If the balance is 0, then grab the start to the end
-					if (balance == 0) {
-						// Reached the end
-						values.add(str.substring(startExpr, i).trim());
-
-						// Set the start expr
-						startExpr = str.substring(i).indexOf(split) + 1;
-
-					}
-
-				}
-			}
-		}
-
-		// Return the array
-		return values.toArray(String[]::new);
-	}
 }
