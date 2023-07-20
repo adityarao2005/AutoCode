@@ -1,4 +1,4 @@
-package com.raos.autocode.core.property;
+package com.raos.autocode.core.beans.property;
 
 public interface Pointer<T> extends ReadableProperty<T>, WritableProperty<T> {
 
@@ -32,7 +32,7 @@ public interface Pointer<T> extends ReadableProperty<T>, WritableProperty<T> {
 	}
 
 	// Swap pointer indexes
-	static <T> void swap(Pointer<T> pointer1, Pointer<T> pointer2) {
+	public static <T> void swap(Pointer<T> pointer1, Pointer<T> pointer2) {
 		T value = pointer1.get();
 		pointer1.set(pointer2.get());
 		pointer2.set(value);

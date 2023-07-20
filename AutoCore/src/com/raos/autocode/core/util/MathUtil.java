@@ -1,4 +1,4 @@
-package com.raos.autocode.core.algorithm;
+package com.raos.autocode.core.util;
 
 import java.math.BigInteger;
 import java.util.Collection;
@@ -35,7 +35,7 @@ public final class MathUtil {
 	}
 
 	// For factorial method
-	private static BigInteger[] factorials = new BigInteger[Integer.MAX_VALUE];
+	private static BigInteger[] factorials = new BigInteger[255];
 
 	// Initialize factorials
 	static {
@@ -273,7 +273,7 @@ public final class MathUtil {
 	}
 
 	// For fibonnaci series
-	private static BigInteger[] fibonnaci = new BigInteger[Integer.MAX_VALUE];
+	private static BigInteger[] fibonnaci = new BigInteger[255];
 
 	static {
 		fibonnaci[0] = BigInteger.ZERO;

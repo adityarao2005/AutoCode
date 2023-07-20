@@ -1,4 +1,4 @@
-package com.raos.autocode.core.algorithm;
+package com.raos.autocode.core.util;
 
 import java.util.LinkedList;
 import java.util.List;

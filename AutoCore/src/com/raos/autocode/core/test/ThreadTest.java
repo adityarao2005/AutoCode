@@ -1,7 +1,14 @@
 package com.raos.autocode.core.test;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import com.raos.autocode.core.annotations.ToDo;
-import com.raos.autocode.core.property.Pointer;
 
 @ToDo(description = "Add multithreading support including the management of locks", methods = "")
 public class ThreadTest {
@@ -12,8 +19,8 @@ public class ThreadTest {
 		// ------------------------------------------------
 		// Threading test
 		
-		
-		
+		collectionsTest(ConcurrentHashMap.newKeySet());
+
 		System.out.println("Hello World");
 
 		Object lock = new Object();
@@ -41,5 +48,19 @@ public class ThreadTest {
 
 		System.out.println("Waited 5 seconds!");
 
+	}
+
+	public static void collectionsTest(Collection<Integer> value) {
+
+		for (int i = 0; i < 10; i++)
+			value.add(i);
+
+		for (int vv : value) {
+			System.out.println("Hello World: " + vv);
+			value.remove(vv);
+			System.out.println(value);
+		}
+
+		System.out.println(value);
 	}
 }

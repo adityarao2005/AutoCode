@@ -1,12 +1,13 @@
 package com.raos.autocode.math.util;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map.Entry;
 import java.util.Objects;
 
-import com.raos.autocode.core.util.Pair;
 import com.raos.autocode.math.parsing.ExpressionParsingException;
 
 // Container for balancing algorithm
@@ -56,8 +57,7 @@ public interface BalancingAlgorithm {
 	}
 
 	// Balancing split
-	@SuppressWarnings("deprecation")
-	public static Pair<String, List<String>> balancingStore(String str, char open, char closed) {
+	public static Entry<String, List<String>> balancingStore(String str, char open, char closed) {
 		// return the array
 		List<String> values = new ArrayList<>();
 
@@ -72,7 +72,7 @@ public interface BalancingAlgorithm {
 				// Set the start expression
 				if (balance == 0)
 					startExpr = i;
-				
+
 				// Increase the balance
 				balance++;
 			} else {
@@ -103,8 +103,8 @@ public interface BalancingAlgorithm {
 		// Replace the occurrences of the values
 		for (int i = 0; i < values.size(); i++)
 			str = str.replace(values.get(i), "@" + i);
-		
-		return new Pair<>(str, values);
+
+		return new AbstractMap.SimpleImmutableEntry<>(str, values);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -124,7 +124,7 @@ public interface BalancingAlgorithm {
 		}
 
 		// merge the left brackets and right brackets array
-		LinkedList<Pair<String, Integer>> merge = new LinkedList<>();
+		LinkedList<Entry<String, Integer>> merge = new LinkedList<>();
 
 		// Create a left and right pointers
 		int L = 0, R = 0;
@@ -132,42 +132,42 @@ public interface BalancingAlgorithm {
 		// Add the brackets to the queue
 		while (L < leftBrackets.size() && R < rightBrackets.size()) {
 			if (leftBrackets.get(L) < rightBrackets.get(R)) {
-				merge.add(new Pair<>("L", leftBrackets.get(L)));
+				merge.add(new AbstractMap.SimpleImmutableEntry<>("L", leftBrackets.get(L)));
 				L++;
 			} else {
-				merge.add(new Pair<>("R", rightBrackets.get(R)));
+				merge.add(new AbstractMap.SimpleImmutableEntry<>("R", rightBrackets.get(R)));
 				R++;
 			}
 		}
 
 		// Add the remainder of the brackets
 		while (L < leftBrackets.size()) {
-			merge.add(new Pair<>("L", leftBrackets.get(L)));
+			merge.add(new AbstractMap.SimpleImmutableEntry<>("L", leftBrackets.get(L)));
 			L++;
 		}
 
 		while (R < rightBrackets.size()) {
-			merge.add(new Pair<>("R", rightBrackets.get(R)));
+			merge.add(new AbstractMap.SimpleImmutableEntry<>("R", rightBrackets.get(R)));
 			R++;
 		}
 
 		// we note that the left most right bracket must be paired with the closest left
 		// bracket on it's left side
-		ListIterator<Pair<String, Integer>> iterator = merge.listIterator(0);
+		ListIterator<Entry<String, Integer>> iterator = merge.listIterator(0);
 
 		// Create an indexed result
-		ArrayList<Pair<Integer, Integer>> result = new ArrayList<>();
+		ArrayList<Entry<Integer, Integer>> result = new ArrayList<>();
 
 		// While we have more brackets
 		while (iterator.hasNext()) {
 			// Get the first pair of brackets
-			Pair<String, Integer> p = iterator.next();
+			Entry<String, Integer> p = iterator.next();
 			// If the type is right bracket
-			if (Objects.equals(p.getFirst(), "R")) {
+			if (Objects.equals(p.getKey(), "R")) {
 				// Remove the right bracket
 				iterator.remove();
 				// Add a new indexed pair
-				result.add(new Pair<>(iterator.previous().getSecond(), p.getSecond()));
+				result.add(new AbstractMap.SimpleImmutableEntry<>(iterator.previous().getValue(), p.getValue()));
 				// Remove the left bracket
 				iterator.remove();
 			}
@@ -175,9 +175,9 @@ public interface BalancingAlgorithm {
 
 		// Print out the result
 		ArrayList<String> subStringArray = new ArrayList<>();
-		for (Pair<Integer, Integer> p : result) {
+		for (Entry<Integer, Integer> p : result) {
 			// include all the characters (include brackets)
-			subStringArray.add(expression.substring(p.getFirst(), p.getSecond() + 1));
+			subStringArray.add(expression.substring(p.getKey(), p.getValue() + 1));
 		}
 	}
 
