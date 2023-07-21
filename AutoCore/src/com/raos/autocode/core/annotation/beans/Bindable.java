@@ -7,13 +7,8 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.raos.autocode.core.beans.property.event.PropertyChangeFilter;
-
 @Documented
 @Retention(RUNTIME)
 @Target(METHOD)
-public @interface ObserverFilterClass {
-
-	// Listener class
-	Class<? extends PropertyChangeFilter<?>> filterClass();
+public @interface Bindable {
 }

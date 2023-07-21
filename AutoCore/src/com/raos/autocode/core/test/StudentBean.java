@@ -9,29 +9,27 @@ import com.raos.autocode.core.annotation.beans.ObserverChangeMethod;
 import com.raos.autocode.core.annotation.beans.ObserverFilterClass;
 import com.raos.autocode.core.annotation.beans.ObserverFilterMethod;
 import com.raos.autocode.core.beans.property.Property;
-import com.raos.autocode.core.beans.property.PropertyChangeListener;
-import com.raos.autocode.core.beans.property.PropertyHandler;
+import com.raos.autocode.core.beans.property.event.PropertyHandler;
 
 @Bean
 public interface StudentBean {
 
-	@BeanProperty(nullable = true, required = true)
+	@BeanProperty(nullable = false, required = true, type = String.class)
 	@Immutable
 	public Property<String> userName();
 
 	@Observable
 	@ObserverChangeMethod(methodName = "passwordChanged")
 	@ObserverFilterMethod(methodName = "validatePassword")
-	@BeanProperty(nullable = true, required = true)
+	@BeanProperty(nullable = false, required = true, type = String.class)
 	public Property<String> password();
 
 	@Observable
-	@BeanProperty(nullable = true)
+	@BeanProperty(nullable = false, type = Integer.class)
 	@ObserverChangeClass(listenerClass = AgeHandler.class)
 	@ObserverFilterClass(filterClass = AgeHandler.class)
 	public Property<Integer> age();
 
-	
 	public static class AgeHandler implements PropertyHandler<Integer> {
 
 		@Override
@@ -44,13 +42,11 @@ public interface StudentBean {
 			// TODO Auto-generated method stub
 			return false;
 		}
-		
+
 	}
-	
-	
-	
-	
-	// Allowed listeners: Runnable, Consumer<Property<?>>, TriConsumer<Property<?>, ?, ?>
+
+	// Allowed listeners: Runnable, Consumer<Property<?>>, TriConsumer<Property<?>,
+	// ?, ?>
 	public default void noArglistener() {
 	}
 
@@ -66,7 +62,7 @@ public interface StudentBean {
 	public default boolean passwordChanged(Object newv) {
 		return false;
 	}
-	
+
 	public default boolean propertyFilter(Property<?> property, Object newv) {
 		// Return false to signal invalid parameter
 		return false;

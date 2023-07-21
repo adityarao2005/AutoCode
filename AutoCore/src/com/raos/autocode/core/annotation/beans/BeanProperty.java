@@ -20,4 +20,8 @@ public @interface BeanProperty {
 	
 	// Required on initialization
 	boolean required() default false;
+	
+	// Embedded type
+	Class<?> type();
+	
 }

@@ -13,14 +13,16 @@ public final class ExceptionUtil {
 	}
 
 	public static interface TRunnable {
-		void run() throws Exception;
+		void run() throws Throwable;
 	}
 
-	public static interface TSupplier<V> extends Callable<V> {
+	public static interface TSupplier<V> {
+		
+		V get() throws Throwable;
 	}
 
 	public static interface TConsumer<V> {
-		void accept(V v) throws Exception;
+		void accept(V v) throws Throwable;
 	}
 
 	public static interface TFunction<R, V> extends Callback<R, V> {
@@ -31,8 +33,8 @@ public final class ExceptionUtil {
 	public static <T> Supplier<T> throwSilently(TSupplier<T> supplier) {
 		return () -> {
 			try {
-				return supplier.call();
-			} catch (Exception e) {
+				return supplier.get();
+			} catch (Throwable e) {
 				throw new RuntimeException(e);
 			}
 		};
@@ -43,7 +45,7 @@ public final class ExceptionUtil {
 		return () -> {
 			try {
 				supplier.run();
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				throw new RuntimeException(e);
 			}
 		};
@@ -54,7 +56,7 @@ public final class ExceptionUtil {
 		return (v) -> {
 			try {
 				supplier.accept(v);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				throw new RuntimeException(e);
 			}
 		};
@@ -65,7 +67,7 @@ public final class ExceptionUtil {
 		return (t) -> {
 			try {
 				return supplier.call(t);
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				throw new RuntimeException(e);
 			}
 		};

@@ -7,7 +7,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.raos.autocode.core.beans.property.PropertyChangeListener;
+import com.raos.autocode.core.beans.property.event.PropertyChangeListener;
 
 @Documented
 @Retention(RUNTIME)

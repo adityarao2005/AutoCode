@@ -4,7 +4,8 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.raos.autocode.core.util.MultiMap;
+import com.raos.autocode.core.beans.property.event.PropertyChangeFilter;
+import com.raos.autocode.core.beans.property.event.PropertyChangeListener;
 
 // Acts as a manager for the properties
 // Root for dependency injection for beans
@@ -49,25 +50,57 @@ public interface PropertyManager extends PropertyChangeListener<Object>, Propert
 	}
 
 	// FOR OBSERVABLE PROPERTIES ONLY
-	// Register change listener
-	void registerChangeListener(Property<?> property, PropertyChangeListener<?> listener);
+	// Registration of change listener
+	public static <T> void registerChangeListener(Property<T> property, PropertyChangeListener<T> listener) {
+		if (property instanceof ObservableProperty)
+			((ObservableProperty<T>) property).getListeners().add(listener);
+		else
+			throw new IllegalArgumentException(
+					"ERROR: Property is not observable. Consider using the @Observable annotation on the property (if in a bean) or an ObservableProperty instance");
+	}
 
 	public default void registerChangeListener(String name, PropertyChangeListener<?> listener) {
 		registerChangeListener(Objects.requireNonNull(getProperty(name)), listener);
 	}
 
-	// Register change filter
-	void registerChangeFilter(Property<?> property, PropertyChangeFilter<?> filter);
+	// deregistration of change listener
+	public static <T> void deregisterChangeListener(Property<T> property, PropertyChangeListener<T> listener) {
+		if (property instanceof ObservableProperty)
+			((ObservableProperty<T>) property).getListeners().remove(listener);
+		else
+			throw new IllegalArgumentException(
+					"ERROR: Property is not observable. Consider using the @Observable annotation on the property (if in a bean) or an ObservableProperty instance");
+	}
+
+	public default void deregisterChangeListener(String name, PropertyChangeListener<?> listener) {
+		deregisterChangeListener(Objects.requireNonNull(getProperty(name)), listener);
+	}
+
+	// Registration of change filter
+	public static <T> void registerChangeFilter(Property<T> property, PropertyChangeFilter<T> filter) {
+		if (property instanceof ObservableProperty)
+			((ObservableProperty<T>) property).getFilters().add(filter);
+		else
+			throw new IllegalArgumentException(
+					"ERROR: Property is not observable. Consider using the @Observable annotation on the property (if in a bean) or an ObservableProperty instance");
+	}
 
 	public default void registerChangeFilter(String name, PropertyChangeFilter<?> filter) {
 		registerChangeFilter(Objects.requireNonNull(getProperty(name)), filter);
 	}
 
-	// Listeners
-	MultiMap<Property<?>, PropertyChangeListener<?>> getRegisteredListeners();
+	// deregistration of change listener
+	public static <T> void deregisterChangeFilter(Property<T> property, PropertyChangeFilter<T> filter) {
+		if (property instanceof ObservableProperty)
+			((ObservableProperty<T>) property).getFilters().remove(filter);
+		else
+			throw new IllegalArgumentException(
+					"ERROR: Property is not observable. Consider using the @Observable annotation on the property (if in a bean) or an ObservableProperty instance");
+	}
 
-	// Filters
-	MultiMap<Property<?>, PropertyChangeFilter<?>> getRegisteredFilters();
+	public default void deregisterChangeFilter(String name, PropertyChangeFilter<?> filter) {
+		deregisterChangeFilter(Objects.requireNonNull(getProperty(name)), filter);
+	}
 
 	// Do this in the proxy
 	public static String toString(PropertyManager thiz) {
