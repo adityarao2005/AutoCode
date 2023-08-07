@@ -4,6 +4,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Objects;
 
 import com.raos.autocode.core.beans.property.Property;
 import com.raos.autocode.core.beans.property.PropertyManager;
@@ -58,12 +59,17 @@ public abstract class AbstractProperty<T> implements Property<T>, Externalizable
 		return getValue();
 	}
 
+	@SuppressWarnings({ "unchecked" })
 	@Override
-	public void set(T value) {
-		if (value == null)
-			return;
+	public void set(Object value) {
+		if (!nullable && value == null)
+			throw new NullPointerException("Null values not allowed");
 
-		setValue(value);
+		// Type check
+		if (!type.isInstance(value))
+			throw new ClassCastException("The argument passed is not a valid type");
+
+		setValue((T) value);
 	}
 
 	@Override
@@ -110,6 +116,23 @@ public abstract class AbstractProperty<T> implements Property<T>, Externalizable
 		setNullable(in.readBoolean());
 		setBean((PropertyManager) in.readObject());
 		set((T) in.readObject());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(value);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AbstractProperty<?> other = (AbstractProperty<?>) obj;
+		return Objects.equals(type, other.type) && Objects.equals(value, other.value);
 	}
 
 }

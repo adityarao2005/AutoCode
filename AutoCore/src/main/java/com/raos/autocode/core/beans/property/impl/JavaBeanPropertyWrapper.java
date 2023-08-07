@@ -28,7 +28,7 @@ public class JavaBeanPropertyWrapper<T> implements Property<T> {
 	}
 
 	@Override
-	public void set(T value) {
+	public void set(Object value) {
 		accessor.setValue(value);
 	}
 
@@ -53,7 +53,7 @@ public class JavaBeanPropertyWrapper<T> implements Property<T> {
 
 		T getValue();
 
-		void setValue(T t);
+		void setValue(Object t);
 
 		String getName();
 
@@ -83,7 +83,7 @@ public class JavaBeanPropertyWrapper<T> implements Property<T> {
 		}
 
 		@Override
-		public void setValue(T t) {
+		public void setValue(Object t) {
 			varHandle.set(bean, t);
 		}
 
@@ -126,7 +126,7 @@ public class JavaBeanPropertyWrapper<T> implements Property<T> {
 		}
 
 		@Override
-		public void setValue(T t) {
+		public void setValue(Object t) {
 			ExceptionUtil.throwSilently(() -> setterHandle.invoke(bean, t));
 		}
 
@@ -166,7 +166,7 @@ public class JavaBeanPropertyWrapper<T> implements Property<T> {
 		}
 
 		@Override
-		public void setValue(T t) {
+		public void setValue(Object t) {
 			ExceptionUtil.throwSilently(() -> setterHandle.invoke(bean, t));
 		}
 
@@ -202,8 +202,8 @@ public class JavaBeanPropertyWrapper<T> implements Property<T> {
 		}
 
 		@Override
-		public void setValue(T t) {
-			setterHandle.accept(t);
+		public void setValue(Object t) {
+			setterHandle.accept((T) t);
 		}
 
 		@Override
@@ -239,7 +239,7 @@ public class JavaBeanPropertyWrapper<T> implements Property<T> {
 		}
 
 		@Override
-		public void setValue(T t) {
+		public void setValue(Object t) {
 			ExceptionUtil.throwSilently(() -> varHandle.set(bean, t));
 		}
 

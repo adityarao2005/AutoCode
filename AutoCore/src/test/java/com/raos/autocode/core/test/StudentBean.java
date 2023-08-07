@@ -14,14 +14,14 @@ import com.raos.autocode.core.beans.property.event.PropertyHandler;
 @Bean
 public interface StudentBean {
 
-	@BeanProperty(nullable = false, required = true, type = String.class)
+	@BeanProperty(nullable = false, type = String.class)
 	@Immutable
-	public Property<String> userName();
+	public Property<String> username();
 
 	@Observable
 	@ObserverChangeMethod(methodName = "passwordChanged")
 	@ObserverFilterMethod(methodName = "validatePassword")
-	@BeanProperty(nullable = false, required = true, type = String.class)
+	@BeanProperty(nullable = false, type = String.class)
 	public Property<String> password();
 
 	@Observable

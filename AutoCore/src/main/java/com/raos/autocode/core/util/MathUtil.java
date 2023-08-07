@@ -8,6 +8,10 @@ public final class MathUtil {
 
 	private MathUtil() {
 	}
+	
+	static {
+		System.err.println("Loaded");
+	}
 
 	// Uses Euclids algorithm to find gcd
 	public static int gcd(int a, int b) {

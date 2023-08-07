@@ -17,7 +17,7 @@ public class ImmutablePropertyImpl<T> extends AbstractProperty<T> implements Imm
 	}
 
 	@Override
-	public void set(T value) {
+	public void set(Object value) {
 		// Set through immutable property interfaces
 		ImmutableProperty.super.set(value);
 	}

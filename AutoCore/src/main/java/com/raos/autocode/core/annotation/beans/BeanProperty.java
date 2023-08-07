@@ -12,14 +12,8 @@ import java.lang.annotation.Target;
 @Target(METHOD)
 public @interface BeanProperty {
 
-	// Name of property, if it is "##default" then it will use regular name
-	String name() default "##default";
-	
 	// Checks whether null values are allowed
 	boolean nullable() default true;
-	
-	// Required on initialization
-	boolean required() default false;
 	
 	// Embedded type
 	Class<?> type();

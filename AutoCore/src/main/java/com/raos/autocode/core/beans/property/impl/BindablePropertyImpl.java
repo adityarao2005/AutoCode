@@ -30,7 +30,7 @@ public class BindablePropertyImpl<T> extends ObservablePropertyImpl<T> implement
 	}
 
 	@Override
-	public void set(T value) {
+	public void set(Object value) {
 		// Check if setting the value the natural way is ok
 		// This is only acceptable if isBound is false OR the bound value is the same as
 		// the current value

@@ -7,6 +7,8 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+// TODO: Rethink how to make this work
+// Maybe make it a readonly property wrapper??!?!
 @Documented
 @Retention(RUNTIME)
 @Target(METHOD)

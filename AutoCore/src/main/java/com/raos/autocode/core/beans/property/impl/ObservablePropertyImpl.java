@@ -35,14 +35,19 @@ public class ObservablePropertyImpl<T> extends AbstractProperty<T> implements Ob
 		return filters;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void set(T value) {
+	public void set(Object value) {
+		// Type check
+		if (!getType().isInstance(value))
+			throw new ClassCastException("The argument passed is not a valid type");
+		
 		// Allow or not allow
 		boolean allow = true;
 		
 		// Check if we allow
 		for (PropertyChangeFilter<T> filter : getFilters())
-			allow &= filter.filter(this, value);
+			allow &= filter.filter(this, (T) value);
 		
 		if (!allow)
 			// Do something here to error handle
@@ -55,7 +60,7 @@ public class ObservablePropertyImpl<T> extends AbstractProperty<T> implements Ob
 		
 		// Perform change
 		for (PropertyChangeListener<T> listener : getListeners())
-			listener.onChange(this, old, value);
+			listener.onChange(this, old, (T) value);
 	}
 
 }
