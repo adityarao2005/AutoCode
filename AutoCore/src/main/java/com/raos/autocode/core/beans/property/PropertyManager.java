@@ -110,7 +110,7 @@ public interface PropertyManager extends PropertyChangeListener<Object>, Propert
 
 	// Do this in the proxy
 	public static int hashCode(PropertyManager thiz) {
-		return thiz.getProperties().hashCode();
+		return thiz.getProperties().stream().map(Property::getValue).collect(Collectors.toSet()).hashCode();
 	}
 
 	// Do this in the proxy

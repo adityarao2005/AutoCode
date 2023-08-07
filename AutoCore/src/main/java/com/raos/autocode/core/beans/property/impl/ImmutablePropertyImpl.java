@@ -3,6 +3,7 @@ package com.raos.autocode.core.beans.property.impl;
 import com.raos.autocode.core.beans.property.ImmutableProperty;
 import com.raos.autocode.core.beans.property.PropertyManager;
 
+@Deprecated
 public class ImmutablePropertyImpl<T> extends AbstractProperty<T> implements ImmutableProperty<T> {
 
 	public ImmutablePropertyImpl() {

@@ -1,5 +1,6 @@
 package com.raos.autocode.core.beans.property;
 
+@Deprecated
 public interface ImmutableProperty<T> extends Property<T> {
 
 	@Override

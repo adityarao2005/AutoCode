@@ -15,7 +15,8 @@ public abstract class AbstractProperty<T> implements Property<T>, Externalizable
 	private String name;
 	private T value;
 	private PropertyManager bean;
-	private Class<T> type;
+	@SuppressWarnings("unchecked")
+	private Class<T> type = (Class<T>) Object.class;
 	private boolean nullable;
 
 	// Constructors
@@ -46,17 +47,17 @@ public abstract class AbstractProperty<T> implements Property<T>, Externalizable
 		this.name = name;
 	}
 
-	public T getValue() {
+	protected T _internal_getValue() {
 		return value;
 	}
 
-	public void setValue(T value) {
+	protected void _internal_setValue(T value) {
 		this.value = value;
 	}
 
 	@Override
 	public T get() {
-		return getValue();
+		return _internal_getValue();
 	}
 
 	@SuppressWarnings({ "unchecked" })
@@ -69,7 +70,7 @@ public abstract class AbstractProperty<T> implements Property<T>, Externalizable
 		if (!type.isInstance(value))
 			throw new ClassCastException("The argument passed is not a valid type");
 
-		setValue((T) value);
+		_internal_setValue((T) value);
 	}
 
 	@Override
@@ -123,6 +124,10 @@ public abstract class AbstractProperty<T> implements Property<T>, Externalizable
 		return Objects.hash(value);
 	}
 
+	public int deepHashCode() {
+		return Objects.hash(bean, name, nullable, type, value);
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -135,4 +140,11 @@ public abstract class AbstractProperty<T> implements Property<T>, Externalizable
 		return Objects.equals(type, other.type) && Objects.equals(value, other.value);
 	}
 
+	public boolean deepEquals(Object obj) {
+		if (!equals(obj))
+			return false;
+
+		AbstractProperty<?> other = (AbstractProperty<?>) obj;
+		return Objects.equals(bean, other.bean) && Objects.equals(name, other.name);
+	}
 }
