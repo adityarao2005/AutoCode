@@ -1,6 +1,5 @@
 package com.raos.autocode.core.beans;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -12,7 +11,7 @@ import com.raos.autocode.core.beans.property.PropertyManager;
 public final class BeanFactory implements InvocationHandler {
 
 	// Object map
-	private Map<Object, BeanDelegate> proxies;
+	private Map<Integer, BeanDelegate> proxies;
 
 	public BeanFactory() {
 		// Create a new concurrent hashmap for thread safety
@@ -24,9 +23,9 @@ public final class BeanFactory implements InvocationHandler {
 	public <T> T createBean(Class<T> beanClass) {
 		// Create the proxy instance
 		Object value = Proxy.newProxyInstance(beanClass.getClassLoader(),
-				new Class[] { beanClass, PropertyManager.class, Serializable.class }, this);
+				new Class[] { beanClass, PropertyManager.class }, this);
 		// Put proxy bean delegate in map
-		proxies.put(value, new BeanDelegate(value, beanClass));
+		proxies.put(System.identityHashCode(value), new BeanDelegate(value, beanClass));
 		// Return value
 		return (T) value;
 	}
@@ -35,7 +34,7 @@ public final class BeanFactory implements InvocationHandler {
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
 		// Handle only
-		return proxies.get(proxy).invoke(method, args);
+		return proxies.get(System.identityHashCode(proxy)).invoke(method, args);
 
 	}
 }

@@ -38,26 +38,28 @@ public class ObservablePropertyImpl<T> extends AbstractProperty<T> implements Ob
 	@SuppressWarnings("unchecked")
 	@Override
 	public void set(Object value) {
+		// Null check
+		if (value == null)
+			if (!isNullable())
+				throw new NullPointerException("Null values not allowed");
 		// Type check
-		if (!getType().isInstance(value))
-			throw new ClassCastException("The argument passed is not a valid type");
-		
-		// Allow or not allow
-		boolean allow = true;
-		
+		else if (!getType().isInstance(value))
+				throw new ClassCastException("The argument passed is not a valid type");
+
 		// Check if we allow
-		for (PropertyChangeFilter<T> filter : getFilters())
-			allow &= filter.filter(this, (T) value);
-		
-		if (!allow)
-			// Do something here to error handle
-			return;
-		
+		for (PropertyChangeFilter<T> filter : getFilters()) {
+			if (!filter.filter(this, (T) value)) {
+				// ON error
+				filter.onError((T) value);
+				return;
+			}
+		}
+
 		// Get old value
 		T old = this.get();
 		// Set the value
 		super.set(value);
-		
+
 		// Perform change
 		for (PropertyChangeListener<T> listener : getListeners())
 			listener.onChange(this, old, (T) value);

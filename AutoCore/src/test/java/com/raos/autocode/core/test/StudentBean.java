@@ -2,7 +2,6 @@ package com.raos.autocode.core.test;
 
 import com.raos.autocode.core.annotation.beans.Bean;
 import com.raos.autocode.core.annotation.beans.BeanProperty;
-import com.raos.autocode.core.annotation.beans.Immutable;
 import com.raos.autocode.core.annotation.beans.Observable;
 import com.raos.autocode.core.annotation.beans.ObserverChangeClass;
 import com.raos.autocode.core.annotation.beans.ObserverChangeMethod;
@@ -15,7 +14,7 @@ import com.raos.autocode.core.beans.property.event.PropertyHandler;
 public interface StudentBean {
 
 	@BeanProperty(nullable = false, type = String.class)
-	@Immutable
+//	@Immutable
 	public Property<String> username();
 
 	@Observable
@@ -34,37 +33,32 @@ public interface StudentBean {
 
 		@Override
 		public void onChange(Property<Integer> property, Integer old, Integer newv) {
-			System.out.println("");
+			System.out.printf("Old value: %d, New value: %d%n", old, newv);
 		}
 
 		@Override
 		public boolean filter(Property<Integer> property, Integer newv) {
-			// TODO Auto-generated method stub
-			return false;
+			return newv > 5;
 		}
 
+		@Override
+		public void onError(Integer invalidValue) {
+			System.err.printf("Invalid value: %d%n", invalidValue);
+		}
 	}
 
-	// Allowed listeners: Runnable, Consumer<Property<?>>, TriConsumer<Property<?>,
-	// ?, ?>
-	public default void noArglistener() {
+//
+//	// Allowed listeners:
+	public default void passwordChanged(Property<String> property, String old, String newv) {
+		System.out.println("password changed: " + newv);
 	}
 
-	public default void oneArglistener(Property<?> property) {
-
-	}
-
-	public default void fullListener(Property<?> property, Object old, Object newv) {
-
-	}
-
-	// Allowed filters types: Predicate<?>, BiPredicate<Property<?>, ?>
-	public default boolean passwordChanged(Object newv) {
-		return false;
-	}
-
-	public default boolean propertyFilter(Property<?> property, Object newv) {
+//
+//	// Allowed filters types
+	public default boolean validatePassword(Property<String> property, String newv) {
 		// Return false to signal invalid parameter
-		return false;
+		if (newv == null || newv.length() < 8)
+			return false;
+		return true;
 	}
 }

@@ -3,12 +3,12 @@ package com.raos.autocode.core.beans;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import com.raos.autocode.core.annotation.beans.BeanProperty;
 import com.raos.autocode.core.annotation.beans.Bindable;
@@ -16,6 +16,8 @@ import com.raos.autocode.core.annotation.beans.Immutable;
 import com.raos.autocode.core.annotation.beans.Observable;
 import com.raos.autocode.core.annotation.beans.ObserverChangeClass;
 import com.raos.autocode.core.annotation.beans.ObserverChangeMethod;
+import com.raos.autocode.core.annotation.beans.ObserverFilterClass;
+import com.raos.autocode.core.annotation.beans.ObserverFilterMethod;
 import com.raos.autocode.core.beans.property.ObservableProperty;
 import com.raos.autocode.core.beans.property.Property;
 import com.raos.autocode.core.beans.property.PropertyManager;
@@ -26,6 +28,8 @@ import com.raos.autocode.core.beans.property.impl.ImmutablePropertyImpl;
 import com.raos.autocode.core.beans.property.impl.ObservablePropertyImpl;
 import com.raos.autocode.core.beans.property.impl.PropertyImpl;
 import com.raos.autocode.core.util.ExceptionUtil;
+import com.raos.autocode.core.util.ExceptionUtil.TFunction;
+import com.raos.autocode.core.util.ProxyUtil;
 
 // Bean delegate
 class BeanDelegate {
@@ -52,11 +56,13 @@ class BeanDelegate {
 			throw new Error(e);
 		}
 	}
-	
+
 	// Object wrapping
 	private Object bean;
 	private Class<?> beanClass;
-	private SortedSet<Property<?>> properties;
+	// Sorted Set
+	private Map<String, Property<?>> properties;
+	// Filters and Listeners
 	private Map<Class<?>, PropertyChangeFilter<?>> filterClasses;
 	private Map<Class<?>, PropertyChangeListener<?>> listenerClasses;
 
@@ -69,7 +75,7 @@ class BeanDelegate {
 		listenerClasses = new HashMap<>();
 
 		// Create a properties tree set
-		properties = new TreeSet<>(Comparator.comparing(Property::getName));
+		properties = new HashMap<>();
 
 		// Stream the properties
 		// Make sure to get only the properties that are
@@ -78,11 +84,16 @@ class BeanDelegate {
 		// - has no parameters
 		// - and has the annotation @BeanProperty assigned
 		Arrays.stream(beanClass.getMethods()).filter(Predicate.not(Method::isDefault))
-				.filter(m -> m.getReturnType() == Property.class).filter(m -> m.getParameterCount() == 0)
-				.filter(m -> m.isAnnotationPresent(BeanProperty.class))
-				.map(ExceptionUtil.<Method, Property<?>>throwSilently(this::createProperty)).forEach(properties::add);
+				.filter(BeanDelegate::isPropertyMethod).filter(m -> m.isAnnotationPresent(BeanProperty.class))
+				.map(ExceptionUtil.<Method, Property<?>>throwSilently(this::createProperty))
+				.forEach(p -> properties.put(p.getName(), p));
 
-		properties = Collections.unmodifiableSortedSet(properties);
+		// Add the properties
+		properties = Collections.unmodifiableMap(properties);
+	}
+
+	public static boolean isPropertyMethod(Method m) {
+		return m.getReturnType() == Property.class && m.getParameterCount() == 0;
 	}
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
@@ -111,36 +122,77 @@ class BeanDelegate {
 			else
 				property = new ObservablePropertyImpl<>(m.getName(), (PropertyManager) bean, propertyType, nullable);
 
-			if (m.isAnnotationPresent(ObserverChangeMethod.class)) {
-				// Allowed listeners: Runnable, Consumer<Property<?>>, TriConsumer<Property<?>,
-				// ?, ?>
-				String methodName = m.getAnnotation(ObserverChangeMethod.class).methodName();
-
-				//
-
-//						LambdaMetafactory.metafactory(MethodHandles.privateLookupIn(propertyType, beanClass), methodName, null, null, null, null);
-
-			}
-
-			if (m.isAnnotationPresent(ObserverChangeClass.class)) {
-
-				// Get the listener class from the annotation
-				Class<? extends PropertyChangeListener<?>> listenerClass = m.getAnnotation(ObserverChangeClass.class)
-						.listenerClass();
-
-				// Put if absent new listener class
-				listenerClasses.putIfAbsent(listenerClass, listenerClass.getDeclaredConstructor().newInstance());
-
-				// Get the listener class
-				property.getListeners().add((PropertyChangeListener<T>) listenerClasses.get(listenerClass));
-
-			}
+			initObservableProperty(m, property);
 
 			return property;
 
-			// Check if this is Bindable
 		} else {
 			return new PropertyImpl<>(m.getName(), (PropertyManager) bean, propertyType, nullable);
+		}
+	}
+
+	// Initialize an observable property
+	@SuppressWarnings("unchecked")
+	private <T> void initObservableProperty(Method m, ObservableProperty<T> property) throws Throwable {
+		if (m.isAnnotationPresent(ObserverChangeMethod.class)) {
+			// Allowed listeners: PropertyChangeListener<?>
+			String methodName = m.getAnnotation(ObserverChangeMethod.class).methodName();
+
+			// Get the methods which are acceptable
+			Optional<Method> method = Arrays.stream(beanClass.getDeclaredMethods())
+					.filter(m1 -> m1.getName().equals(methodName)).findAny();
+
+			try {
+				property.getListeners().add(PropertyChangeListener.fromVirtual(bean, method.get()));
+			} catch (Exception exception) {
+				throw new BeansInstantationException("Unable to add listener method to properties", exception);
+			}
+
+		}
+
+		if (m.isAnnotationPresent(ObserverChangeClass.class)) {
+
+			// Get the listener class from the annotation
+			Class<? extends PropertyChangeListener<?>> listenerClass = m.getAnnotation(ObserverChangeClass.class)
+					.listenerClass();
+
+			// Put if absent new listener class
+			listenerClasses.putIfAbsent(listenerClass, listenerClass.getDeclaredConstructor().newInstance());
+
+			// Get the listener class
+			property.getListeners().add((PropertyChangeListener<T>) listenerClasses.get(listenerClass));
+
+		}
+
+		if (m.isAnnotationPresent(ObserverFilterMethod.class)) {
+			// Allowed listeners: PropertyChangeFilter<?>
+			String methodName = m.getAnnotation(ObserverFilterMethod.class).methodName();
+
+			// Get the methods which are acceptable
+
+			Optional<Method> method = Arrays.stream(beanClass.getDeclaredMethods())
+					.filter(m1 -> m1.getName().equals(methodName)).findAny();
+
+			try {
+				property.getFilters().add(PropertyChangeFilter.fromVirtual(bean, method.get()));
+			} catch (Exception exception) {
+				throw new BeansInstantationException("Unable to add filter method to properties", exception);
+			}
+
+		}
+
+		if (m.isAnnotationPresent(ObserverFilterClass.class)) {
+
+			// Get the listener class from the annotation
+			Class<? extends PropertyChangeFilter<?>> filterClass = m.getAnnotation(ObserverFilterClass.class)
+					.filterClass();
+
+			// Put if absent new listener class
+			filterClasses.putIfAbsent(filterClass, filterClass.getDeclaredConstructor().newInstance());
+
+			// Get the listener class
+			property.getFilters().add((PropertyChangeFilter<T>) filterClasses.get(filterClass));
+
 		}
 	}
 
@@ -151,6 +203,7 @@ class BeanDelegate {
 			return PropertyManager.hashCode((PropertyManager) bean);
 		}
 
+		// Equals method
 		if (method.equals(EQUALS)) {
 			if (!(args[1] instanceof PropertyManager))
 				return false;
@@ -158,21 +211,30 @@ class BeanDelegate {
 			return PropertyManager.equals((PropertyManager) bean, (PropertyManager) args[1]);
 		}
 
+		// To string method
 		if (method.equals(TO_STRING)) {
-			return PropertyManager.toString((PropertyManager) bean);
+			return String.format("%s [ %s ]", beanClass, properties.values().stream()
+					.map(p -> String.format("%s = %s", p.getName(), p.get())).collect(Collectors.joining(", ")));
 		}
 
 		// Property Manager methods
 		if (method.equals(GET_PROPERTIES)) {
-			return null;
+			return new HashSet<>(properties.values());
 		}
 
+		// Get property or else return null
 		if (method.equals(GET_PROPERTY)) {
-
+			return properties.get(args[0]);
 		}
 
 		// Property Methods
+		if (isPropertyMethod(method)) {
+			return properties.get(method.getName());
+		}
 
+		// default methods
+		if (method.isDefault())
+			return ProxyUtil.handleDefaultMethod(bean, beanClass, method, args);
 		// ADD MORE HANDLING
 		return null;
 	}

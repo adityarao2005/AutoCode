@@ -103,12 +103,6 @@ public interface PropertyManager extends PropertyChangeListener<Object>, Propert
 	}
 
 	// Do this in the proxy
-	public static String toString(PropertyManager thiz) {
-		return String.format("%s [ %s ]", thiz.getClass(), thiz.getProperties().stream()
-				.map(p -> String.format("%s = %s", p.getName(), p.get())).collect(Collectors.joining(", ")));
-	}
-
-	// Do this in the proxy
 	public static int hashCode(PropertyManager thiz) {
 		return thiz.getProperties().stream().map(Property::getValue).collect(Collectors.toSet()).hashCode();
 	}
