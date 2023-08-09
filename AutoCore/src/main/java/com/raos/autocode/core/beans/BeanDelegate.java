@@ -13,6 +13,7 @@ import com.raos.autocode.core.annotation.beans.Bindable;
 import com.raos.autocode.core.annotation.beans.Observable;
 import com.raos.autocode.core.annotation.beans.ObserverListenerClass;
 import com.raos.autocode.core.annotation.beans.ObserverListenerMethod;
+import com.raos.autocode.core.annotations.ToDo;
 import com.raos.autocode.core.annotation.beans.ObserverFilterClass;
 import com.raos.autocode.core.annotation.beans.ObserverFilterMethod;
 import com.raos.autocode.core.beans.property.ObservableProperty;
@@ -104,6 +105,7 @@ final class BeanDelegate {
 				.forEach(ExceptionUtil.<Method>throwSilently(m -> m.invoke(bean)));
 	}
 
+	@ToDo(description = "add Decorator design pattern handling via @DecoratorClass and @DecoratorMethod")
 	@SuppressWarnings({ "unchecked" })
 	public <T> Property<T> createProperty(Method m) throws Throwable {
 		// Get the annotation
