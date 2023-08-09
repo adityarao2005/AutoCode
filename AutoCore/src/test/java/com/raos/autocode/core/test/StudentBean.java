@@ -19,7 +19,7 @@ public interface StudentBean {
 
 	@Observable
 	@ObserverChangeMethod(methodName = "passwordChanged")
-	@ObserverFilterMethod(methodName = "validatePassword")
+	@ObserverFilterMethod(methodName = "validatePassword", errorMessage = "Error! password not good")
 	@BeanProperty(nullable = false, type = String.class)
 	public Property<String> password();
 

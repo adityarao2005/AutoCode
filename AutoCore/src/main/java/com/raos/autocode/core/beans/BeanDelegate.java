@@ -21,6 +21,7 @@ import com.raos.autocode.core.annotation.beans.ObserverFilterMethod;
 import com.raos.autocode.core.beans.property.ObservableProperty;
 import com.raos.autocode.core.beans.property.Property;
 import com.raos.autocode.core.beans.property.PropertyManager;
+import com.raos.autocode.core.beans.property.event.ErrorHandlingPropertyChangeFilter;
 import com.raos.autocode.core.beans.property.event.PropertyChangeFilter;
 import com.raos.autocode.core.beans.property.event.PropertyChangeListener;
 import com.raos.autocode.core.beans.property.impl.BindablePropertyImpl;
@@ -166,7 +167,8 @@ class BeanDelegate {
 
 		if (m.isAnnotationPresent(ObserverFilterMethod.class)) {
 			// Allowed listeners: PropertyChangeFilter<?>
-			String methodName = m.getAnnotation(ObserverFilterMethod.class).methodName();
+			ObserverFilterMethod mAnnotation = m.getAnnotation(ObserverFilterMethod.class);
+			String methodName = mAnnotation.methodName();
 
 			// Get the methods which are acceptable
 
@@ -174,7 +176,8 @@ class BeanDelegate {
 					.filter(m1 -> m1.getName().equals(methodName)).findAny();
 
 			try {
-				property.getFilters().add(PropertyChangeFilter.fromVirtual(bean, method.get()));
+				property.getFilters().add(new ErrorHandlingPropertyChangeFilter<>(
+						PropertyChangeFilter.fromVirtual(bean, method.get()), mAnnotation.errorMessage()));
 			} catch (Exception exception) {
 				throw new BeansInstantationException("Unable to add filter method to properties", exception);
 			}

@@ -14,4 +14,5 @@ public @interface ObserverFilterMethod {
 
 	String methodName();
 	
+	String errorMessage() default "";
 }
