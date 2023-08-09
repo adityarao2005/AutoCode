@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import com.raos.autocode.core.annotation.beans.BeanProperty;
 import com.raos.autocode.core.annotation.beans.Bindable;
-import com.raos.autocode.core.annotation.beans.Immutable;
+import com.raos.autocode.core.annotation.beans.Init;
 import com.raos.autocode.core.annotation.beans.Observable;
 import com.raos.autocode.core.annotation.beans.ObserverChangeClass;
 import com.raos.autocode.core.annotation.beans.ObserverChangeMethod;
@@ -25,11 +25,9 @@ import com.raos.autocode.core.beans.property.event.ErrorHandlingPropertyChangeFi
 import com.raos.autocode.core.beans.property.event.PropertyChangeFilter;
 import com.raos.autocode.core.beans.property.event.PropertyChangeListener;
 import com.raos.autocode.core.beans.property.impl.BindablePropertyImpl;
-import com.raos.autocode.core.beans.property.impl.ImmutablePropertyImpl;
 import com.raos.autocode.core.beans.property.impl.ObservablePropertyImpl;
 import com.raos.autocode.core.beans.property.impl.PropertyImpl;
 import com.raos.autocode.core.util.ExceptionUtil;
-import com.raos.autocode.core.util.ExceptionUtil.TFunction;
 import com.raos.autocode.core.util.ProxyUtil;
 
 // Bean delegate
@@ -61,6 +59,7 @@ class BeanDelegate {
 	// Object wrapping
 	private Object bean;
 	private Class<?> beanClass;
+	private Map<String, Object> initParams;
 	// Sorted Set
 	private Map<String, Property<?>> properties;
 	// Filters and Listeners
@@ -68,7 +67,7 @@ class BeanDelegate {
 	private Map<Class<?>, PropertyChangeListener<?>> listenerClasses;
 
 	// Constructor
-	BeanDelegate(Object bean, Class<?> beanClass) {
+	public BeanDelegate(Object bean, Class<?> beanClass, Map<String, Object> initParams) {
 		this.bean = bean;
 		this.beanClass = beanClass;
 
@@ -91,6 +90,21 @@ class BeanDelegate {
 
 		// Add the properties
 		properties = Collections.unmodifiableMap(properties);
+
+		this.initParams = initParams;
+	}
+
+	void init() {
+
+		// Check if the annotation is present
+		for (String var : initParams.keySet()) {
+			properties.get(var).setValue(initParams.get(var));
+		}
+
+		Arrays.stream(beanClass.getDeclaredMethods()).filter(m -> m.isAnnotationPresent(Init.class)).map(m -> {
+			m.setAccessible(true);
+			return m;
+		}).forEach(ExceptionUtil.<Method>throwSilently(m -> m.invoke(bean)));
 	}
 
 	public static boolean isPropertyMethod(Method m) {
@@ -106,13 +120,8 @@ class BeanDelegate {
 		Class<T> propertyType = (Class<T>) annotation.type();
 		boolean nullable = annotation.nullable();
 
-		// Check if this is immutable
-		if (m.isAnnotationPresent(Immutable.class)) {
-			// Create a new immutable property
-			return new ImmutablePropertyImpl<>(m.getName(), (PropertyManager) bean, propertyType, nullable);
-
-			// Check if this is observable
-		} else if (m.isAnnotationPresent(Observable.class) || m.isAnnotationPresent(Bindable.class)) {
+		// Check if this is observable
+		if (m.isAnnotationPresent(Observable.class) || m.isAnnotationPresent(Bindable.class)) {
 
 			// Create a new observable property
 			ObservableProperty<T> property;

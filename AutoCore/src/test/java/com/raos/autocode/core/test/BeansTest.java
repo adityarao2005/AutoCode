@@ -7,12 +7,14 @@ import java.util.logging.Logger;
 import org.junit.jupiter.api.Test;
 
 import com.raos.autocode.core.beans.BeanFactory;
+import com.raos.autocode.core.util.MapBuilder;
 
 class BeansTest {
 	private static StudentBean bean;
 	private static Logger logger = Logger.getLogger(BeansTest.class.getName());
 
-	static void init() {
+	@Test
+	void testInit() {
 
 		if (bean == null) {
 			BeanFactory beanFactory = new BeanFactory();
@@ -25,10 +27,18 @@ class BeansTest {
 	}
 
 	@Test
+	void testCtorInit() {
+
+		BeanFactory beanFactory = new BeanFactory();
+		bean = beanFactory.createBean(StudentBean.class, MapBuilder.<String, Object>create()
+				.addEntry("username", "adityarao").addEntry("password", "weakpassword").addEntry("age", 10).build());
+	}
+
+	@Test
 	void testObserverChangeAndFilterClass() {
 		logger.info("Starting test: testObserverChangeAndFilterClass()");
 
-		init();
+		testInit();
 
 		bean.age().setValue(-1);
 
@@ -43,7 +53,7 @@ class BeansTest {
 	void testObserverChangeAndFilterMethod() {
 		logger.info("Starting test: testObserverChangeAndFilterMethod()");
 
-		init();
+		testInit();
 
 		bean.password().setValue("weak");
 

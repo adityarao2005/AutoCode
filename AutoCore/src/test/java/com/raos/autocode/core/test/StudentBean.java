@@ -2,6 +2,7 @@ package com.raos.autocode.core.test;
 
 import com.raos.autocode.core.annotation.beans.Bean;
 import com.raos.autocode.core.annotation.beans.BeanProperty;
+import com.raos.autocode.core.annotation.beans.Init;
 import com.raos.autocode.core.annotation.beans.Observable;
 import com.raos.autocode.core.annotation.beans.ObserverChangeClass;
 import com.raos.autocode.core.annotation.beans.ObserverChangeMethod;
@@ -14,7 +15,6 @@ import com.raos.autocode.core.beans.property.event.PropertyHandler;
 public interface StudentBean {
 
 	@BeanProperty(nullable = false, type = String.class)
-//	@Immutable
 	public Property<String> username();
 
 	@Observable
@@ -28,6 +28,12 @@ public interface StudentBean {
 	@ObserverChangeClass(listenerClass = AgeHandler.class)
 	@ObserverFilterClass(filterClass = AgeHandler.class)
 	public Property<Integer> age();
+	
+	@Init
+	private void init() {
+		System.out.println("Bean created!");
+		System.out.println(this);
+	}
 
 	public static class AgeHandler implements PropertyHandler<Integer> {
 

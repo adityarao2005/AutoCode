@@ -17,6 +17,10 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
 	private List<Entry<K, V>> mapEntries = new LinkedList<>();
 	private boolean immutable;
 
+	public static <K, V> MapBuilder<K, V> create() {
+		return new MapBuilder<>();
+	}
+
 	// Add map entry
 	public MapBuilder<K, V> addEntry(K key, V value) {
 		mapEntries.add(new SimpleImmutableEntry<>(key, value));

@@ -19,13 +19,22 @@ public final class BeanFactory implements InvocationHandler {
 	}
 
 	// Create a bean via proxy
-	@SuppressWarnings("unchecked")
 	public <T> T createBean(Class<T> beanClass) {
+		return createBean(beanClass, Map.of());
+	}
+
+	// Create a bean via proxy
+	@SuppressWarnings("unchecked")
+	public <T> T createBean(Class<T> beanClass, Map<String, Object> map) {
 		// Create the proxy instance
 		Object value = Proxy.newProxyInstance(beanClass.getClassLoader(),
 				new Class[] { beanClass, PropertyManager.class }, this);
 		// Put proxy bean delegate in map
-		proxies.put(System.identityHashCode(value), new BeanDelegate(value, beanClass));
+		BeanDelegate delegate = new BeanDelegate(value, beanClass, map);
+
+		proxies.put(System.identityHashCode(value), delegate);
+
+		delegate.init();
 		// Return value
 		return (T) value;
 	}

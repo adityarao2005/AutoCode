@@ -17,7 +17,7 @@ public interface Property<T> extends Pointer<T> {
 		return get();
 	}
 	
-	public default void setValue(T value) {
+	public default void setValue(Object value) {
 		set(value);
 	}
 }
