@@ -4,8 +4,8 @@ import com.raos.autocode.core.annotation.beans.Bean;
 import com.raos.autocode.core.annotation.beans.BeanProperty;
 import com.raos.autocode.core.annotation.beans.Init;
 import com.raos.autocode.core.annotation.beans.Observable;
-import com.raos.autocode.core.annotation.beans.ObserverChangeClass;
-import com.raos.autocode.core.annotation.beans.ObserverChangeMethod;
+import com.raos.autocode.core.annotation.beans.ObserverListenerClass;
+import com.raos.autocode.core.annotation.beans.ObserverListenerMethod;
 import com.raos.autocode.core.annotation.beans.ObserverFilterClass;
 import com.raos.autocode.core.annotation.beans.ObserverFilterMethod;
 import com.raos.autocode.core.beans.property.Property;
@@ -18,14 +18,14 @@ public interface StudentBean {
 	public Property<String> username();
 
 	@Observable
-	@ObserverChangeMethod(methodName = "passwordChanged")
+	@ObserverListenerMethod(methodName = "passwordChanged")
 	@ObserverFilterMethod(methodName = "validatePassword", errorMessage = "Error! password not good")
 	@BeanProperty(nullable = false, type = String.class)
 	public Property<String> password();
 
 	@Observable
 	@BeanProperty(nullable = false, type = Integer.class)
-	@ObserverChangeClass(listenerClass = AgeHandler.class)
+	@ObserverListenerClass(listenerClass = AgeHandler.class)
 	@ObserverFilterClass(filterClass = AgeHandler.class)
 	public Property<Integer> age();
 	

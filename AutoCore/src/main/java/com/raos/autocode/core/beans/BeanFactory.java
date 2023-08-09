@@ -11,11 +11,11 @@ import com.raos.autocode.core.beans.property.PropertyManager;
 public final class BeanFactory implements InvocationHandler {
 
 	// Object map
-	private Map<Integer, BeanDelegate> proxies;
+	private Map<Class<?>, BeanClass> beanClasses;
 
 	public BeanFactory() {
 		// Create a new concurrent hashmap for thread safety
-		proxies = new ConcurrentHashMap<>();
+		beanClasses = new ConcurrentHashMap<>();
 	}
 
 	// Create a bean via proxy
@@ -24,26 +24,23 @@ public final class BeanFactory implements InvocationHandler {
 	}
 
 	// Create a bean via proxy
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	public <T> T createBean(Class<T> beanClass, Map<String, Object> map) {
-		// Create the proxy instance
-		Object value = Proxy.newProxyInstance(beanClass.getClassLoader(),
-				new Class[] { beanClass, PropertyManager.class }, this);
+		Class<?> proxyClass = Proxy.getProxyClass(beanClass.getClassLoader(), new Class[] { beanClass, PropertyManager.class });
+
+		// Make sure we have the proxy class in our map
+		beanClasses.putIfAbsent(proxyClass, new BeanClass(beanClass));
+
 		// Put proxy bean delegate in map
-		BeanDelegate delegate = new BeanDelegate(value, beanClass, map);
+		return (T) beanClasses.get(proxyClass).construct(this, map);
 
-		proxies.put(System.identityHashCode(value), delegate);
-
-		delegate.init();
-		// Return value
-		return (T) value;
 	}
 
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
 		// Handle only
-		return proxies.get(System.identityHashCode(proxy)).invoke(method, args);
+		return beanClasses.get(proxy.getClass()).getAtObject(proxy).invoke(method, args);
 
 	}
 }

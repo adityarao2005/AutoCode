@@ -10,26 +10,21 @@ import com.raos.autocode.core.beans.BeanFactory;
 import com.raos.autocode.core.util.MapBuilder;
 
 class BeansTest {
+	static BeanFactory beanFactory = new BeanFactory();
 	private static StudentBean bean;
 	private static Logger logger = Logger.getLogger(BeansTest.class.getName());
 
-	@Test
 	void testInit() {
 
-		if (bean == null) {
-			BeanFactory beanFactory = new BeanFactory();
-			bean = beanFactory.createBean(StudentBean.class);
+		bean = beanFactory.createBean(StudentBean.class);
 
-			bean.username().setValue("adityarao");
-			bean.password().setValue("weakpassword");
-			bean.age().setValue(10);
-		}
+		bean.username().setValue("adityarao");
+		bean.password().setValue("weakpassword");
+		bean.age().setValue(10);
 	}
 
-	@Test
 	void testCtorInit() {
 
-		BeanFactory beanFactory = new BeanFactory();
 		bean = beanFactory.createBean(StudentBean.class, MapBuilder.<String, Object>create()
 				.addEntry("username", "adityarao").addEntry("password", "weakpassword").addEntry("age", 10).build());
 	}
@@ -53,7 +48,7 @@ class BeansTest {
 	void testObserverChangeAndFilterMethod() {
 		logger.info("Starting test: testObserverChangeAndFilterMethod()");
 
-		testInit();
+		testCtorInit();
 
 		bean.password().setValue("weak");
 
