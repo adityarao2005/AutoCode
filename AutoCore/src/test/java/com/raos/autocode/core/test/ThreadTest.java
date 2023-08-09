@@ -10,7 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.raos.autocode.core.annotations.ToDo;
 
-@ToDo(description = "Add multithreading support including the management of locks", methods = "")
+@ToDo(description = "Add multithreading support including the management of locks")
 public class ThreadTest {
 	public static void main(String[] args) throws Exception {
 

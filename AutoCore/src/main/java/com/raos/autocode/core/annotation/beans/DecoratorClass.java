@@ -8,6 +8,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.function.UnaryOperator;
 
+import com.raos.autocode.core.annotations.ClassPreamble;
+
+@ClassPreamble(author = "Aditya Rao", date = "8/9/2023")
 @Documented
 @Retention(RUNTIME)
 @Target(METHOD)

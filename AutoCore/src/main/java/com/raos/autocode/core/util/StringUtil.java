@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.raos.autocode.core.annotations.ToDo;
 
-@ToDo(description = "Create, understand, and add the following functions to the String Util class", methods = { "prefixFunction", "kmpAlgorithm", "zAlgorithm" })
+@ToDo(description = "Create, understand, and add the following functions to the String Util class.. prefixFunction, kmpAlgorithm, zAlgorithm")
 // Provides some utilities for the string data type
 public interface StringUtil {
 	// Limit for hashing
@@ -93,6 +93,5 @@ public interface StringUtil {
 		// Returns the list of occurrences
 		return list;
 	}
-
 
 }
