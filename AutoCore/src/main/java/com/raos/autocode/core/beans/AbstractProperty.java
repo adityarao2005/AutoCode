@@ -1,9 +1,5 @@
-package com.raos.autocode.core.beans.property.impl;
+package com.raos.autocode.core.beans;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.Objects;
 
 import com.raos.autocode.core.beans.property.Property;
@@ -11,9 +7,7 @@ import com.raos.autocode.core.beans.property.PropertyManager;
 import com.raos.autocode.core.util.ReflectionUtil;
 
 // Abstract Property
-public abstract class AbstractProperty<T> implements Property<T>, Externalizable {
-	// Test the magic number
-	private static final int MAGIC_NUMBER = 10;
+public abstract class AbstractProperty<T> implements Property<T> {
 	// Fields
 	private String name;
 	private T value;
@@ -58,7 +52,8 @@ public abstract class AbstractProperty<T> implements Property<T>, Externalizable
 	}
 
 	protected void _internal_setValue(T value) {
-		if (!ReflectionUtil.getCaller(0).equals(this.getClass()))
+		Class<?> caller = ReflectionUtil.getCaller(2);
+		if (!caller.isAssignableFrom(this.getClass()))
 			throw new IllegalAccessError("No accessing this via reflection or methodhandles");
 
 		this.value = value;
@@ -75,12 +70,13 @@ public abstract class AbstractProperty<T> implements Property<T>, Externalizable
 
 		// Say that the property is read only
 		if (readOnly) {
-			if (!ReflectionUtil.getCaller(MAGIC_NUMBER).equals(bean.getClass()))
-				throw new IllegalAccessError("This property is read only");
+			if (!ReflectionUtil.checkCaller(bean.getClass(), 10) && !ReflectionUtil.checkCaller(BeanClass.class, 10))
+				throw new IllegalAccessError(
+						"This property is read only and cannot be mutated by other classes other than the enclosing bean");
 		}
 
 		if (!nullable && value == null)
-			throw new NullPointerException("Null values not allowed");
+			throw new NullPointerException("Null values are not allowed");
 
 		// Type check
 		if (!type.isInstance(value))
@@ -113,26 +109,6 @@ public abstract class AbstractProperty<T> implements Property<T>, Externalizable
 
 	public void setNullable(boolean nullable) {
 		this.nullable = nullable;
-	}
-
-	// Externalizable stuff
-	@Override
-	public void writeExternal(ObjectOutput out) throws IOException {
-		out.writeUTF(getName());
-		out.writeObject(getType());
-		out.writeBoolean(isNullable());
-		out.writeObject(getBean());
-		out.writeObject(get());
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-		setName(in.readUTF());
-		setType((Class<T>) in.readObject());
-		setNullable(in.readBoolean());
-		setBean((PropertyManager) in.readObject());
-		set((T) in.readObject());
 	}
 
 	@Override

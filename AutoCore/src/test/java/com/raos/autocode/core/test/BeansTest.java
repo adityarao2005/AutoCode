@@ -13,7 +13,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import com.raos.autocode.core.beans.BeanFactory;
 import com.raos.autocode.core.beans.BeansInstantationException;
-import com.raos.autocode.core.beans.property.PropertyManager;
 import com.raos.autocode.core.util.MapBuilder;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -26,9 +25,12 @@ class BeansTest {
 
 		bean = beanFactory.createBean(StudentBean.class);
 
-		bean.username().setValue("adityarao");
+		assertThrows(IllegalAccessError.class, () -> bean.username().setValue("adityarao"));
+		
 		bean.password().setValue("weakpassword");
 		bean.age().setValue(10);
+		System.out.println();
+		bean.setUsername("adityarao");
 	}
 
 	void testCtorInit() throws BeansInstantationException {

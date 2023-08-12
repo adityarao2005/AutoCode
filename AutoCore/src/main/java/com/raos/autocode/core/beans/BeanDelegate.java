@@ -1,6 +1,5 @@
 package com.raos.autocode.core.beans;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,6 +13,7 @@ import com.raos.autocode.core.annotation.beans.Bindable;
 import com.raos.autocode.core.annotation.beans.Observable;
 import com.raos.autocode.core.annotation.beans.ObserverListenerClass;
 import com.raos.autocode.core.annotation.beans.ObserverListenerMethod;
+import com.raos.autocode.core.annotation.beans.ReadOnly;
 import com.raos.autocode.core.annotations.ToDo;
 import com.raos.autocode.core.annotation.beans.ObserverFilterClass;
 import com.raos.autocode.core.annotation.beans.ObserverFilterMethod;
@@ -23,9 +23,6 @@ import com.raos.autocode.core.beans.property.PropertyManager;
 import com.raos.autocode.core.beans.property.event.ErrorHandlingPropertyChangeFilter;
 import com.raos.autocode.core.beans.property.event.PropertyChangeFilter;
 import com.raos.autocode.core.beans.property.event.PropertyChangeListener;
-import com.raos.autocode.core.beans.property.impl.BindablePropertyImpl;
-import com.raos.autocode.core.beans.property.impl.ObservablePropertyImpl;
-import com.raos.autocode.core.beans.property.impl.PropertyImpl;
 import com.raos.autocode.core.util.ExceptionUtil;
 import com.raos.autocode.core.util.ProxyUtil;
 import com.raos.autocode.core.util.ReflectionUtil;
@@ -85,7 +82,7 @@ final class BeanDelegate {
 		// - has no parameters
 		// - and has the annotation @BeanProperty assigned
 		beanClass.getPropertyMethods().stream()
-				.map(ExceptionUtil.<Method, Property<?>>throwSilently(this::createProperty))
+				.map(ExceptionUtil.<Method, Property<?>>throwSilently(method -> createProperty(method)))
 				.forEach(p -> properties.put(p.getName(), p));
 
 		// Add the properties
@@ -128,6 +125,8 @@ final class BeanDelegate {
 		Class<T> propertyType = (Class<T>) annotation.type();
 		boolean nullable = annotation.nullable();
 
+		boolean readOnly = m.isAnnotationPresent(ReadOnly.class);
+
 		// Check if this is observable
 		if (m.isAnnotationPresent(Observable.class) || m.isAnnotationPresent(Bindable.class)) {
 
@@ -136,16 +135,18 @@ final class BeanDelegate {
 
 			// If its bindable then create a bindable property
 			if (m.isAnnotationPresent(Bindable.class))
-				property = new BindablePropertyImpl<>(m.getName(), (PropertyManager) bean, propertyType, nullable);
+				property = new BindablePropertyImpl<>(m.getName(), (PropertyManager) bean, propertyType, nullable,
+						readOnly);
 			else
-				property = new ObservablePropertyImpl<>(m.getName(), (PropertyManager) bean, propertyType, nullable);
+				property = new ObservablePropertyImpl<>(m.getName(), (PropertyManager) bean, propertyType, nullable,
+						readOnly);
 
 			initObservableProperty(m, property);
 
 			return property;
 
 		} else {
-			return new PropertyImpl<>(m.getName(), (PropertyManager) bean, propertyType, nullable);
+			return new PropertyImpl<>(m.getName(), (PropertyManager) bean, propertyType, nullable, readOnly);
 		}
 	}
 
@@ -221,8 +222,6 @@ final class BeanDelegate {
 		if (isDestroyed)
 			throw new NullPointerException("Bean is destroyed");
 
-		dumpStackTrace();
-
 		// Object class methods
 		if (method.equals(HASH_CODE)) {
 			return PropertyManager.hashCode((PropertyManager) bean);
@@ -269,14 +268,4 @@ final class BeanDelegate {
 		return isDestroyed;
 	}
 
-	private void dumpStackTrace() {
-
-		Class<?> clazz = ReflectionUtil.getCaller(10);
-		System.out.println(clazz);
-		if (clazz.equals(bean.getClass()))
-			System.out.println("Hooray! Our own class called us");
-		else
-			System.out.println("BOOOOORRRRRINNNG");
-
-	}
 }

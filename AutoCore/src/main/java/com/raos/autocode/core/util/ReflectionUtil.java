@@ -2,6 +2,8 @@ package com.raos.autocode.core.util;
 
 import java.lang.StackWalker.StackFrame;
 import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
@@ -80,6 +82,17 @@ public class ReflectionUtil {
 	public static StackFrame getCallerFrame(Stream<StackFrame> stackframe, int levels) {
 		StackFrame[] frames = stackframe.limit(levels).toArray(StackFrame[]::new);
 
+		Arrays.asList(frames).forEach(System.out::println);
 		return frames[levels - 1];
 	}
+
+	public static boolean checkCallerFrame(Stream<StackFrame> stackframes, int maxLevels, Class<?> caller) {
+		return stackframes.limit(10).map(StackFrame::getDeclaringClass).anyMatch(caller::equals);
+	}
+
+	public static boolean checkCaller(Class<?> caller, int maxLevels) {
+		return StackWalker.getInstance(Set.of(StackWalker.Option.RETAIN_CLASS_REFERENCE))
+				.walk(str -> checkCallerFrame(str, maxLevels, caller));
+	}
+
 }

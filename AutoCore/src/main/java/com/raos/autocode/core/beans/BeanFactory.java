@@ -112,4 +112,7 @@ public final class BeanFactory implements InvocationHandler, AutoCloseable {
 			closed = true;
 		}
 	}
+	
+	//
+	
 }

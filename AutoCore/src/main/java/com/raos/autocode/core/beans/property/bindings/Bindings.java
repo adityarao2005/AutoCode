@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.raos.autocode.core.beans.AbstractProperty;
+import com.raos.autocode.core.beans.ObservablePropertyImpl;
 import com.raos.autocode.core.beans.property.BindableProperty;
 import com.raos.autocode.core.beans.property.ObservableProperty;
 import com.raos.autocode.core.beans.property.Property;
 import com.raos.autocode.core.beans.property.event.PropertyChangeListener;
-import com.raos.autocode.core.beans.property.impl.AbstractProperty;
-import com.raos.autocode.core.beans.property.impl.ObservablePropertyImpl;
 
 // Warning, bidirectional bindings not supported yet
 public final class Bindings {

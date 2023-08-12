@@ -1,6 +1,5 @@
 package com.raos.autocode.core.test;
 
-import java.util.logging.Logger;
 
 import com.raos.autocode.core.annotation.beans.Bean;
 import com.raos.autocode.core.annotation.beans.BeanProperty;
@@ -9,6 +8,7 @@ import com.raos.autocode.core.annotation.beans.Init;
 import com.raos.autocode.core.annotation.beans.Observable;
 import com.raos.autocode.core.annotation.beans.ObserverListenerClass;
 import com.raos.autocode.core.annotation.beans.ObserverListenerMethod;
+import com.raos.autocode.core.annotation.beans.ReadOnly;
 import com.raos.autocode.core.annotation.beans.ObserverFilterClass;
 import com.raos.autocode.core.annotation.beans.ObserverFilterMethod;
 import com.raos.autocode.core.beans.property.Property;
@@ -18,6 +18,7 @@ import com.raos.autocode.core.beans.property.event.PropertyChangeHandler;
 public interface StudentBean {
 
 	@BeanProperty(nullable = false, type = String.class)
+	@ReadOnly
 	public Property<String> username();
 
 	@Observable
@@ -43,11 +44,15 @@ public interface StudentBean {
 		System.out.println(this);
 		System.out.println("Bean Destroyed");
 	}
-	
+
 	public default void printStack() {
 		System.out.println(username());
-		
+
 		System.out.println("Stack printed!!");
+	}
+
+	public default void setUsername(String username) {
+		username().set(username);
 	}
 
 	public static class AgeHandler implements PropertyChangeHandler<Integer> {

@@ -1,4 +1,4 @@
-package com.raos.autocode.core.beans.property.impl;
+package com.raos.autocode.core.beans;
 
 import com.raos.autocode.core.beans.property.PropertyManager;
 
