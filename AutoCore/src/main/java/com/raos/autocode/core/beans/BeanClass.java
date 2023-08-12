@@ -1,17 +1,15 @@
 package com.raos.autocode.core.beans;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.raos.autocode.core.annotation.beans.BeanProperty;
+import com.raos.autocode.core.annotation.beans.Destructor;
 import com.raos.autocode.core.annotation.beans.Init;
 import com.raos.autocode.core.annotation.beans.ObserverFilterClass;
 import com.raos.autocode.core.annotation.beans.ObserverFilterMethod;
@@ -36,6 +34,7 @@ final class BeanClass {
 	private Map<String, Method> filterMethods;
 	private Map<String, Method> listenerMethods;
 	private Method initMethod;
+	private Method destroyMethod;
 
 	public BeanClass(Class<?> beanClass) {
 		// Create a new concurrent hashmap for thread safety
@@ -47,6 +46,7 @@ final class BeanClass {
 	}
 
 	// Spy on the class and decode all attributes
+	@SuppressWarnings("unchecked")
 	private void spy() throws Exception {
 		// Stream over methods of beanClass and get only the methods which are property
 		// methods and have the annotation "BeanProperty" present and collect to list
@@ -68,8 +68,15 @@ final class BeanClass {
 				Class<? extends PropertyChangeListener<?>> changeListener = method
 						.getAnnotation(ObserverListenerClass.class).listenerClass();
 
+				PropertyChangeListener<?> listener;
 				// Create a new instance and add
-				listenerObjects.putIfAbsent(changeListener, changeListener.getConstructor().newInstance());
+				listenerObjects.putIfAbsent(changeListener, listener = changeListener.getConstructor().newInstance());
+
+				// Check whether property
+				if (listener instanceof PropertyChangeFilter) {
+					filterObjects.putIfAbsent((Class<? extends PropertyChangeFilter<?>>) listener.getClass(),
+							(PropertyChangeFilter<?>) listener);
+				}
 			}
 
 			// If the method has ObserverFilterClass annotation
@@ -78,8 +85,15 @@ final class BeanClass {
 				Class<? extends PropertyChangeFilter<?>> changeFilter = method.getAnnotation(ObserverFilterClass.class)
 						.filterClass();
 
+				PropertyChangeFilter<?> filter;
 				// Create a new instance and add
-				filterObjects.putIfAbsent(changeFilter, changeFilter.getConstructor().newInstance());
+				filterObjects.putIfAbsent(changeFilter, filter = changeFilter.getConstructor().newInstance());
+
+				// Check whether property
+				if (filter instanceof PropertyChangeListener) {
+					listenerObjects.putIfAbsent((Class<? extends PropertyChangeListener<?>>) filter.getClass(),
+							(PropertyChangeListener<?>) filter);
+				}
 			}
 
 			// If the method has ObserverFilterMethod annotation
@@ -103,6 +117,8 @@ final class BeanClass {
 
 		// Get init method
 		initMethod = ReflectionUtil.getMethodsWithAnnotation(beanClass, true, Init.class).findAny().orElse(null);
+		destroyMethod = ReflectionUtil.getMethodsWithAnnotation(beanClass, true, Destructor.class).findAny()
+				.orElse(null);
 	}
 
 	public static boolean isPropertyMethod(Method m) {
@@ -163,6 +179,10 @@ final class BeanClass {
 
 	public Method getInitMethod() {
 		return initMethod;
+	}
+
+	public Method getDestroyMethod() {
+		return destroyMethod;
 	}
 
 }

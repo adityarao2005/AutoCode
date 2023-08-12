@@ -16,12 +16,14 @@ public class ObservablePropertyImpl<T> extends AbstractProperty<T> implements Ob
 	public ObservablePropertyImpl() {
 	}
 
-	public ObservablePropertyImpl(String name, PropertyManager bean, Class<T> type, boolean nullable, T value) {
-		super(name, bean, type, nullable, value);
+	public ObservablePropertyImpl(String name, PropertyManager bean, Class<T> type, boolean nullable, boolean readOnly,
+			T value) {
+		super(name, bean, type, nullable, readOnly, value);
 	}
 
-	public ObservablePropertyImpl(String name, PropertyManager bean, Class<T> type, boolean nullable) {
-		super(name, bean, type, nullable);
+	public ObservablePropertyImpl(String name, PropertyManager bean, Class<T> type, boolean nullable,
+			boolean readOnly) {
+		super(name, bean, type, nullable, readOnly);
 	}
 
 	// Getters
@@ -42,8 +44,8 @@ public class ObservablePropertyImpl<T> extends AbstractProperty<T> implements Ob
 		if (value == null)
 			if (!isNullable())
 				throw new NullPointerException("Null values not allowed");
-		// Type check
-		else if (!getType().isInstance(value))
+			// Type check
+			else if (!getType().isInstance(value))
 				throw new ClassCastException("The argument passed is not a valid type");
 
 		// Check if we allow

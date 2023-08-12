@@ -21,12 +21,13 @@ public class BindablePropertyImpl<T> extends ObservablePropertyImpl<T> implement
 		super();
 	}
 
-	public BindablePropertyImpl(String name, PropertyManager bean, Class<T> type, boolean nullable) {
-		super(name, bean, type, nullable);
+	public BindablePropertyImpl(String name, PropertyManager bean, Class<T> type, boolean readOnly, boolean nullable) {
+		super(name, bean, type, nullable, readOnly);
 	}
 
-	public BindablePropertyImpl(String name, PropertyManager bean, Class<T> type, boolean nullable, T value) {
-		super(name, bean, type, nullable, value);
+	public BindablePropertyImpl(String name, PropertyManager bean, Class<T> type, boolean readOnly, boolean nullable,
+			T value) {
+		super(name, bean, type, nullable, readOnly, value);
 	}
 
 	@Override

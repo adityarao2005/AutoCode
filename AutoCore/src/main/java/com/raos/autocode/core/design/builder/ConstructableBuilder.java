@@ -2,6 +2,8 @@ package com.raos.autocode.core.design.builder;
 
 import java.beans.Expression;
 
+import com.raos.autocode.core.util.ExceptionUtil;
+
 // Create a new constructable builder - builder which invokes a specialized constructor
 public class ConstructableBuilder<T> extends AbstractBuilder<T> {
 	// Fields
@@ -25,7 +27,7 @@ public class ConstructableBuilder<T> extends AbstractBuilder<T> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public T newInstance() {
-		return (T) new Expression(clazz, "new", ctorArgs);
+		return (T) ExceptionUtil.throwSilently(() -> new Expression(clazz, "new", ctorArgs).getValue());
 	}
 
 }

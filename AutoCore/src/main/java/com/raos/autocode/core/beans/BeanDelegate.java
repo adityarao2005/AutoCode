@@ -1,5 +1,6 @@
 package com.raos.autocode.core.beans;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
@@ -64,6 +65,7 @@ final class BeanDelegate {
 	// Filters and Listeners
 	private Map<Class<?>, PropertyChangeFilter<?>> filterClasses;
 	private Map<Class<?>, PropertyChangeListener<?>> listenerClasses;
+	private boolean isDestroyed = false;
 
 	// Constructor
 	public BeanDelegate(Object bean, BeanClass beanClass, Map<String, Object> initParams) {
@@ -105,9 +107,20 @@ final class BeanDelegate {
 				.forEach(ExceptionUtil.<Method>throwSilently(m -> m.invoke(bean)));
 	}
 
+	void destroy() {
+		if (isDestroyed)
+			return;
+
+		// Initialize the bean object
+		Optional.ofNullable(beanClass.getDestroyMethod()).stream().map(ReflectionUtil.getAccessibleSetterOperator())
+				.forEach(ExceptionUtil.<Method>throwSilently(m -> m.invoke(bean)));
+
+		isDestroyed = true;
+	}
+
 	@ToDo(description = "add Decorator design pattern handling via @DecoratorClass and @DecoratorMethod")
 	@SuppressWarnings({ "unchecked" })
-	public <T> Property<T> createProperty(Method m) throws Throwable {
+	private <T> Property<T> createProperty(Method m) throws Throwable {
 		// Get the annotation
 		BeanProperty annotation = m.getAnnotation(BeanProperty.class);
 
@@ -203,6 +216,13 @@ final class BeanDelegate {
 
 	// Invocation method
 	public Object invoke(Method method, Object[] args) throws Throwable {
+
+		// Check destroyed
+		if (isDestroyed)
+			throw new NullPointerException("Bean is destroyed");
+
+		dumpStackTrace();
+
 		// Object class methods
 		if (method.equals(HASH_CODE)) {
 			return PropertyManager.hashCode((PropertyManager) bean);
@@ -218,7 +238,7 @@ final class BeanDelegate {
 
 		// To string method
 		if (method.equals(TO_STRING)) {
-			return String.format("%s [ %s ]", beanClass, properties.values().stream()
+			return String.format("%s [ %s ]", beanClass.getBeanClass(), properties.values().stream()
 					.map(p -> String.format("%s = %s", p.getName(), p.get())).collect(Collectors.joining(", ")));
 		}
 
@@ -239,9 +259,24 @@ final class BeanDelegate {
 
 		// default methods
 		if (method.isDefault())
-			return ProxyUtil.handleDefaultMethod(bean, beanClass.getBeanClass(), method, args);
+			return ProxyUtil.invokeDefault(bean, method, args);
 
 		// ADD MORE HANDLING
 		return null;
+	}
+
+	public boolean isDestroyed() {
+		return isDestroyed;
+	}
+
+	private void dumpStackTrace() {
+
+		Class<?> clazz = ReflectionUtil.getCaller(10);
+		System.out.println(clazz);
+		if (clazz.equals(bean.getClass()))
+			System.out.println("Hooray! Our own class called us");
+		else
+			System.out.println("BOOOOORRRRRINNNG");
+
 	}
 }

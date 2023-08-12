@@ -1,5 +1,6 @@
 package com.raos.autocode.core.util;
 
+import java.lang.StackWalker.StackFrame;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
@@ -8,6 +9,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
@@ -70,4 +72,14 @@ public class ReflectionUtil {
 		return getMethodsStreamed(enclosingClass, privateAccess).filter(m -> m.isAnnotationPresent(annotationClass));
 	}
 
+	public static Class<?> getCaller(int levels) {
+		return StackWalker.getInstance(Set.of(StackWalker.Option.RETAIN_CLASS_REFERENCE))
+				.walk(str -> getCallerFrame(str, levels)).getDeclaringClass();
+	}
+
+	public static StackFrame getCallerFrame(Stream<StackFrame> stackframe, int levels) {
+		StackFrame[] frames = stackframe.limit(levels).toArray(StackFrame[]::new);
+
+		return frames[levels - 1];
+	}
 }

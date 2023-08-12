@@ -8,9 +8,12 @@ import java.util.Objects;
 
 import com.raos.autocode.core.beans.property.Property;
 import com.raos.autocode.core.beans.property.PropertyManager;
+import com.raos.autocode.core.util.ReflectionUtil;
 
 // Abstract Property
 public abstract class AbstractProperty<T> implements Property<T>, Externalizable {
+	// Test the magic number
+	private static final int MAGIC_NUMBER = 10;
 	// Fields
 	private String name;
 	private T value;
@@ -18,22 +21,25 @@ public abstract class AbstractProperty<T> implements Property<T>, Externalizable
 	@SuppressWarnings("unchecked")
 	private Class<T> type = (Class<T>) Object.class;
 	private boolean nullable;
+	private boolean readOnly;
 
 	// Constructors
 	public AbstractProperty() {
 
 	}
 
-	public AbstractProperty(String name, PropertyManager bean, Class<T> type, boolean nullable) {
+	public AbstractProperty(String name, PropertyManager bean, Class<T> type, boolean nullable, boolean readOnly) {
 		this();
 		this.name = name;
 		this.bean = bean;
 		this.type = type;
 		this.nullable = nullable;
+		this.readOnly = readOnly;
 	}
 
-	public AbstractProperty(String name, PropertyManager bean, Class<T> type, boolean nullable, T value) {
-		this(name, bean, type, nullable);
+	public AbstractProperty(String name, PropertyManager bean, Class<T> type, boolean nullable, boolean readOnly,
+			T value) {
+		this(name, bean, type, nullable, readOnly);
 		this.value = value;
 	}
 
@@ -52,6 +58,9 @@ public abstract class AbstractProperty<T> implements Property<T>, Externalizable
 	}
 
 	protected void _internal_setValue(T value) {
+		if (!ReflectionUtil.getCaller(0).equals(this.getClass()))
+			throw new IllegalAccessError("No accessing this via reflection or methodhandles");
+
 		this.value = value;
 	}
 
@@ -63,6 +72,13 @@ public abstract class AbstractProperty<T> implements Property<T>, Externalizable
 	@SuppressWarnings({ "unchecked" })
 	@Override
 	public void set(Object value) {
+
+		// Say that the property is read only
+		if (readOnly) {
+			if (!ReflectionUtil.getCaller(MAGIC_NUMBER).equals(bean.getClass()))
+				throw new IllegalAccessError("This property is read only");
+		}
+
 		if (!nullable && value == null)
 			throw new NullPointerException("Null values not allowed");
 
@@ -146,5 +162,10 @@ public abstract class AbstractProperty<T> implements Property<T>, Externalizable
 
 		AbstractProperty<?> other = (AbstractProperty<?>) obj;
 		return Objects.equals(bean, other.bean) && Objects.equals(name, other.name);
+	}
+
+	@Override
+	public String toString() {
+		return value.toString();
 	}
 }

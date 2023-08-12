@@ -15,7 +15,7 @@ public interface PropertyManager extends PropertyChangeListener<Object>, Propert
 	<T> Property<T> getProperty(String name);
 
 	Set<Property<?>> getProperties();
-
+	
 	// Gets the value of the property
 	@SuppressWarnings("unchecked")
 	public default <T> T getValue(String name) {

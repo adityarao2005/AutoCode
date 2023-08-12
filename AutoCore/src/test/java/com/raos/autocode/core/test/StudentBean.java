@@ -1,7 +1,10 @@
 package com.raos.autocode.core.test;
 
+import java.util.logging.Logger;
+
 import com.raos.autocode.core.annotation.beans.Bean;
 import com.raos.autocode.core.annotation.beans.BeanProperty;
+import com.raos.autocode.core.annotation.beans.Destructor;
 import com.raos.autocode.core.annotation.beans.Init;
 import com.raos.autocode.core.annotation.beans.Observable;
 import com.raos.autocode.core.annotation.beans.ObserverListenerClass;
@@ -9,7 +12,7 @@ import com.raos.autocode.core.annotation.beans.ObserverListenerMethod;
 import com.raos.autocode.core.annotation.beans.ObserverFilterClass;
 import com.raos.autocode.core.annotation.beans.ObserverFilterMethod;
 import com.raos.autocode.core.beans.property.Property;
-import com.raos.autocode.core.beans.property.event.PropertyHandler;
+import com.raos.autocode.core.beans.property.event.PropertyChangeHandler;
 
 @Bean
 public interface StudentBean {
@@ -28,14 +31,26 @@ public interface StudentBean {
 	@ObserverListenerClass(listenerClass = AgeHandler.class)
 	@ObserverFilterClass(filterClass = AgeHandler.class)
 	public Property<Integer> age();
-	
+
 	@Init
 	private void init() {
 		System.out.println("Bean created!");
 		System.out.println(this);
 	}
 
-	public static class AgeHandler implements PropertyHandler<Integer> {
+	@Destructor
+	private void destroy() {
+		System.out.println(this);
+		System.out.println("Bean Destroyed");
+	}
+	
+	public default void printStack() {
+		System.out.println(username());
+		
+		System.out.println("Stack printed!!");
+	}
+
+	public static class AgeHandler implements PropertyChangeHandler<Integer> {
 
 		@Override
 		public void onChange(Property<Integer> property, Integer old, Integer newv) {
