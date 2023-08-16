@@ -8,7 +8,7 @@ import com.raos.autocode.core.beans.property.PropertyManager;
 import com.raos.autocode.core.beans.property.event.PropertyChangeFilter;
 import com.raos.autocode.core.beans.property.event.PropertyChangeListener;
 
-public class ObservablePropertyImpl<T> extends AbstractProperty<T> implements ObservableProperty<T> {
+class ObservablePropertyImpl<T> extends AbstractProperty<T> implements ObservableProperty<T> {
 	private List<PropertyChangeListener<T>> listeners = new LinkedList<>();
 	private List<PropertyChangeFilter<T>> filters = new LinkedList<>();
 

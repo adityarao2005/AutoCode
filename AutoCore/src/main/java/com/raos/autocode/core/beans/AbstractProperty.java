@@ -7,7 +7,7 @@ import com.raos.autocode.core.beans.property.PropertyManager;
 import com.raos.autocode.core.util.ReflectionUtil;
 
 // Abstract Property
-public abstract class AbstractProperty<T> implements Property<T> {
+abstract class AbstractProperty<T> implements Property<T> {
 	// Fields
 	private String name;
 	private T value;
@@ -70,7 +70,7 @@ public abstract class AbstractProperty<T> implements Property<T> {
 
 		// Say that the property is read only
 		if (readOnly) {
-			if (!ReflectionUtil.checkCaller(bean.getClass(), 10) && !ReflectionUtil.checkCaller(BeanClass.class, 10))
+			if (!ReflectionUtil.checkCaller(bean.getClass()) && !ReflectionUtil.checkCallerMax(BeanClass.class, 10))
 				throw new IllegalAccessError(
 						"This property is read only and cannot be mutated by other classes other than the enclosing bean");
 		}
@@ -132,12 +132,11 @@ public abstract class AbstractProperty<T> implements Property<T> {
 		return Objects.equals(type, other.type) && Objects.equals(value, other.value);
 	}
 
-	public boolean deepEquals(Object obj) {
+	public boolean deepEquals(AbstractProperty<?> obj) {
 		if (!equals(obj))
 			return false;
 
-		AbstractProperty<?> other = (AbstractProperty<?>) obj;
-		return Objects.equals(bean, other.bean) && Objects.equals(name, other.name);
+		return Objects.equals(bean, obj.bean) && Objects.equals(name, obj.name);
 	}
 
 	@Override

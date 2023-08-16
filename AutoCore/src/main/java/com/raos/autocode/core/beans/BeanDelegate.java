@@ -60,17 +60,12 @@ final class BeanDelegate {
 	// Sorted Set
 	private Map<String, Property<?>> properties;
 	// Filters and Listeners
-	private Map<Class<?>, PropertyChangeFilter<?>> filterClasses;
-	private Map<Class<?>, PropertyChangeListener<?>> listenerClasses;
 	private boolean isDestroyed = false;
 
 	// Constructor
 	public BeanDelegate(Object bean, BeanClass beanClass, Map<String, Object> initParams) {
 		this.bean = bean;
 		this.beanClass = beanClass;
-
-		filterClasses = new HashMap<>();
-		listenerClasses = new HashMap<>();
 
 		// Create a properties tree set
 		properties = new HashMap<>();
@@ -174,11 +169,8 @@ final class BeanDelegate {
 			Class<? extends PropertyChangeListener<?>> listenerClass = m.getAnnotation(ObserverListenerClass.class)
 					.listenerClass();
 
-			// Put if absent new listener class
-			listenerClasses.putIfAbsent(listenerClass, listenerClass.getDeclaredConstructor().newInstance());
-
 			// Get the listener class
-			property.getListeners().add((PropertyChangeListener<T>) listenerClasses.get(listenerClass));
+			property.getListeners().add((PropertyChangeListener<T>) beanClass.getFilterObjects().get(listenerClass));
 
 		}
 
@@ -206,11 +198,8 @@ final class BeanDelegate {
 			Class<? extends PropertyChangeFilter<?>> filterClass = m.getAnnotation(ObserverFilterClass.class)
 					.filterClass();
 
-			// Put if absent new listener class
-			filterClasses.putIfAbsent(filterClass, filterClass.getDeclaredConstructor().newInstance());
-
 			// Get the listener class
-			property.getFilters().add((PropertyChangeFilter<T>) filterClasses.get(filterClass));
+			property.getFilters().add((PropertyChangeFilter<T>) beanClass.getFilterObjects().get(filterClass));
 
 		}
 	}

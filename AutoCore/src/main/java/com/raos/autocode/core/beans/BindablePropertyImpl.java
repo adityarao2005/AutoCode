@@ -8,7 +8,7 @@ import com.raos.autocode.core.beans.property.event.PropertyChangeListener;
 
 // Unidirectional Binding
 // Bidirectional binding is slightly tricky
-public class BindablePropertyImpl<T> extends ObservablePropertyImpl<T> implements BindableProperty<T> {
+class BindablePropertyImpl<T> extends ObservablePropertyImpl<T> implements BindableProperty<T> {
 	// Binder
 	private ObservableProperty<T> binder;
 	// Binding listener

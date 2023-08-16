@@ -2,7 +2,7 @@ package com.raos.autocode.core.beans;
 
 import com.raos.autocode.core.beans.property.PropertyManager;
 
-public class PropertyImpl<T> extends AbstractProperty<T> {
+class PropertyImpl<T> extends AbstractProperty<T> {
 
 	public PropertyImpl() {
 		super();

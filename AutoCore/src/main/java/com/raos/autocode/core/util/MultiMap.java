@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 // Multi valued Map
@@ -66,4 +67,12 @@ public class MultiMap<K, V> extends AbstractMap<K, List<V>> {
 		return internalMap.entrySet();
 	}
 
+	public Optional<V> getOptional(K key) {
+		return get(key).stream().findFirst();
+	}
+
+	@Override
+	public List<V> get(Object key) {
+		return internalMap.get(key);
+	}
 }

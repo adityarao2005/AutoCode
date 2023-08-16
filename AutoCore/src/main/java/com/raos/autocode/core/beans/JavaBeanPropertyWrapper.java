@@ -1,6 +1,5 @@
 package com.raos.autocode.core.beans;
 
-
 import java.beans.PropertyDescriptor;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -54,7 +53,7 @@ public class JavaBeanPropertyWrapper<T> implements Property<T> {
 
 		T getValue();
 
-		void setValue(Object t);
+		void setValue(Object value);
 
 		String getName();
 
@@ -202,6 +201,7 @@ public class JavaBeanPropertyWrapper<T> implements Property<T> {
 			return getterHandle.get();
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public void setValue(Object t) {
 			setterHandle.accept((T) t);

@@ -2,8 +2,6 @@ package com.raos.autocode.core.util;
 
 import java.lang.StackWalker.StackFrame;
 import java.lang.annotation.Annotation;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
@@ -86,13 +84,21 @@ public class ReflectionUtil {
 		return frames[levels - 1];
 	}
 
-	public static boolean checkCallerFrame(Stream<StackFrame> stackframes, int maxLevels, Class<?> caller) {
-		return stackframes.limit(10).map(StackFrame::getDeclaringClass).anyMatch(caller::equals);
+	public static boolean checkCallerFrame(Stream<StackFrame> stackframes, Class<?> caller) {
+		return stackframes.map(StackFrame::getDeclaringClass).anyMatch(caller::equals);
 	}
 
-	public static boolean checkCaller(Class<?> caller, int maxLevels) {
+	public static boolean checkCaller(Class<?> caller) {
 		return StackWalker.getInstance(Set.of(StackWalker.Option.RETAIN_CLASS_REFERENCE))
-				.walk(str -> checkCallerFrame(str, maxLevels, caller));
+				.walk(str -> checkCallerFrame(str, caller));
+	}
+	
+	public static boolean checkCallerFrameMax(Stream<StackFrame> stackframes, int maxLevels, Class<?> caller) {
+		return stackframes.limit(maxLevels).map(StackFrame::getDeclaringClass).anyMatch(caller::equals);
 	}
 
+	public static boolean checkCallerMax(Class<?> caller, int maxLevels) {
+		return StackWalker.getInstance(Set.of(StackWalker.Option.RETAIN_CLASS_REFERENCE))
+				.walk(str -> checkCallerFrameMax(str, maxLevels, caller));
+	}
 }

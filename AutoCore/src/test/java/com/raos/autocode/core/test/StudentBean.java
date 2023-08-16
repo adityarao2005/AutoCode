@@ -14,13 +14,21 @@ import com.raos.autocode.core.annotation.beans.ObserverFilterMethod;
 import com.raos.autocode.core.beans.property.Property;
 import com.raos.autocode.core.beans.property.event.PropertyChangeHandler;
 
+// Annotation says that this class is a bean
+// Gonna be used later for classpath searching annotation support
 @Bean
 public interface StudentBean {
 
+	// @BeanProperty describes that this method is a property for the bean - later addition would be that this is not required (that is if we ever get to figure out what the generic value of methods are)
+	// 	- describes whether this is null or what the type is
+	// @ReadOnly
+	//  - describes that only the StudentBean class can modify the field username
 	@BeanProperty(nullable = false, type = String.class)
 	@ReadOnly
 	public Property<String> username();
 
+	// @Observable shows that this method can be listened onto, listeners can be added or removed by casting the class to a PropertyManager and registering the listener
+	// @ObservableListenerMethod and @ObserverFilterMethod tells the BeanManager to look for a method which will has the signature of a PropertyChangeListener and PropertyChangeFilter respectively
 	@Observable
 	@ObserverListenerMethod(methodName = "passwordChanged")
 	@ObserverFilterMethod(methodName = "validatePassword", errorMessage = "Error! password not good")

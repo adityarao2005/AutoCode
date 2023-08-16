@@ -7,6 +7,14 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import com.raos.autocode.core.annotations.ClassPreamble;
+
+/**
+ * Used to describe a property for an AutoBean
+ * @author Raos
+ *
+ */
+@ClassPreamble(author = "Aditya Rao", currentRevision = 1, date = "Jun 20, 2023")
 @Documented
 @Retention(RUNTIME)
 @Target(METHOD)

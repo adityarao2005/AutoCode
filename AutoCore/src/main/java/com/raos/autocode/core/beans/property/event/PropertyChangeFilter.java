@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 import com.raos.autocode.core.beans.property.Property;
 import com.raos.autocode.core.util.ExceptionUtil;
+import com.raos.autocode.core.util.MethodHandleUtils;
 
 @FunctionalInterface
 public interface PropertyChangeFilter<T> {
@@ -14,8 +15,10 @@ public interface PropertyChangeFilter<T> {
 	public default void onError(T invalidValue) {
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <T> PropertyChangeFilter<T> fromVirtual(Object annotated, Method method) {
 
-		return ExceptionUtil.throwSilently((a, v) -> (boolean) method.invoke(annotated, a, v))::test;
+		return ExceptionUtil.throwSilently(() -> MethodHandleUtils.toLambda(PropertyChangeFilter.class,
+				MethodHandleUtils.fromMethod(method, true).bindTo(annotated))).get();
 	}
 }
