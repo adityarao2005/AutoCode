@@ -1,4 +1,4 @@
-package com.raos.autocode.core.annotation.beans;
+package com.raos.autocode.core.annotation.beans.observable;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -7,13 +7,13 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.raos.autocode.core.beans.property.event.PropertyChangeListener;
+import com.raos.autocode.core.beans.property.event.PropertyChangeFilter;
 
 @Documented
 @Retention(RUNTIME)
 @Target(METHOD)
-public @interface ObserverListenerClass {
+public @interface ObserverFilterClass {
 
 	// Listener class
-	Class<? extends PropertyChangeListener<?>> listenerClass();
+	Class<? extends PropertyChangeFilter<?>> filterClass();
 }

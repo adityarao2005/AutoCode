@@ -21,6 +21,12 @@ public class MapBuilder<K, V> implements Builder<Map<K, V>> {
 		return new MapBuilder<>();
 	}
 
+	public static <K, V> MapBuilder<K, V> create(Map<K, V> values) {
+		MapBuilder<K, V> map = create();
+		map.mapEntries.addAll(values.entrySet());
+		return map;
+	}
+
 	// Add map entry
 	public MapBuilder<K, V> addEntry(K key, V value) {
 		mapEntries.add(new SimpleImmutableEntry<>(key, value));

@@ -1,4 +1,4 @@
-package com.raos.autocode.core.annotation.beans;
+package com.raos.autocode.core.annotation.beans.observable;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

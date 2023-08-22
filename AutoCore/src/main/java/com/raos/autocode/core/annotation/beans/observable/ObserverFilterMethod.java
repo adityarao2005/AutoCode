@@ -1,4 +1,4 @@
-package com.raos.autocode.core.annotation.beans;
+package com.raos.autocode.core.annotation.beans.observable;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -10,5 +10,9 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RUNTIME)
 @Target(METHOD)
-public @interface Observable {
+public @interface ObserverFilterMethod {
+
+	String methodName();
+	
+	String errorMessage() default "";
 }

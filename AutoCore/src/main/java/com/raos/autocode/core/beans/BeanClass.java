@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.raos.autocode.core.annotation.beans.BeanProperty;
 import com.raos.autocode.core.annotation.beans.Destructor;
 import com.raos.autocode.core.annotation.beans.Init;
-import com.raos.autocode.core.annotation.beans.ObserverFilterClass;
-import com.raos.autocode.core.annotation.beans.ObserverFilterMethod;
-import com.raos.autocode.core.annotation.beans.ObserverListenerClass;
-import com.raos.autocode.core.annotation.beans.ObserverListenerMethod;
+import com.raos.autocode.core.annotation.beans.observable.ObserverFilterClass;
+import com.raos.autocode.core.annotation.beans.observable.ObserverFilterMethod;
+import com.raos.autocode.core.annotation.beans.observable.ObserverListenerClass;
+import com.raos.autocode.core.annotation.beans.observable.ObserverListenerMethod;
+import com.raos.autocode.core.annotation.beans.property.BeanProperty;
 import com.raos.autocode.core.annotations.ToDo;
 import com.raos.autocode.core.beans.property.Property;
 import com.raos.autocode.core.beans.property.PropertyManager;

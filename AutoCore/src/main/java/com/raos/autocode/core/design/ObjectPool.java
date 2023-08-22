@@ -54,12 +54,12 @@ public abstract class ObjectPool<T extends AutoCloseable> implements AutoCloseab
 			// If maximum idle connections reached.. poll with time
 			if (maxIdle <= idleQueue.size())
 				if (timeout >= 0)
-					return new PoolableObject(idleQueue.poll(timeout, TimeUnit.SECONDS));
+					return create(idleQueue.poll(timeout, TimeUnit.SECONDS));
 				else
-					return new PoolableObject(idleQueue.take());
+					return create(idleQueue.take());
 			else {
 				// Add object to collection
-				PoolableObject object = new PoolableObject(newInstance());
+				PoolableObject object = create(newInstance());
 				openSet.add(object);
 				return object;
 			}
@@ -68,6 +68,13 @@ public abstract class ObjectPool<T extends AutoCloseable> implements AutoCloseab
 
 	// To create a new Instance
 	protected abstract T newInstance();
+
+	// Create a new poolable object
+	// Default implementation
+	// meant to be overriden for more complicated structures
+	protected PoolableObject create(T instance) {
+		return new PoolableObject(instance);
+	}
 
 	// Create the poolable object
 	public class PoolableObject implements AutoCloseable {

@@ -1,7 +1,8 @@
 package com.raos.autocode.core.beans;
 
+import java.util.Objects;
+
 import com.raos.autocode.core.annotations.ClassPreamble;
-import com.raos.autocode.core.beans.property.BindableProperty;
 import com.raos.autocode.core.beans.property.ObservableProperty;
 import com.raos.autocode.core.beans.property.Property;
 
@@ -19,15 +20,13 @@ public final class PropertyFactory {
 		return new ObservablePropertyImpl<>(propertyName, null, propertyClass, false, false);
 	}
 
-	public static <T> BindableProperty<T> createBindableProperty(String propertyName, Class<T> propertyClass) {
-		return new BindablePropertyImpl<>(propertyName, null, propertyClass, false, false);
-	}
-
 	public static boolean deepEquals(Property<?> first, Property<?> second) {
-		return ((AbstractProperty<?>) first).deepEquals((AbstractProperty<?>) second);
+		return Objects.equals(first.getBean(), second.getBean()) && Objects.equals(first.getName(), second.getName())
+				&& Objects.equals(first.getType(), second.getType())
+				&& Objects.equals(first.getValue(), second.getValue());
 	}
 
 	public static int deepHashCode(Property<?> first) {
-		return ((AbstractProperty<?>) first).deepHashCode();
+		return Objects.hash(first.getBean(), first.getName(), first.getType(), first.getValue());
 	}
 }

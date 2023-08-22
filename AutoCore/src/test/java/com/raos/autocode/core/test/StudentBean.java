@@ -2,15 +2,15 @@ package com.raos.autocode.core.test;
 
 
 import com.raos.autocode.core.annotation.beans.Bean;
-import com.raos.autocode.core.annotation.beans.BeanProperty;
 import com.raos.autocode.core.annotation.beans.Destructor;
 import com.raos.autocode.core.annotation.beans.Init;
-import com.raos.autocode.core.annotation.beans.Observable;
-import com.raos.autocode.core.annotation.beans.ObserverListenerClass;
-import com.raos.autocode.core.annotation.beans.ObserverListenerMethod;
-import com.raos.autocode.core.annotation.beans.ReadOnly;
-import com.raos.autocode.core.annotation.beans.ObserverFilterClass;
-import com.raos.autocode.core.annotation.beans.ObserverFilterMethod;
+import com.raos.autocode.core.annotation.beans.observable.Observable;
+import com.raos.autocode.core.annotation.beans.observable.ObserverFilterClass;
+import com.raos.autocode.core.annotation.beans.observable.ObserverFilterMethod;
+import com.raos.autocode.core.annotation.beans.observable.ObserverListenerClass;
+import com.raos.autocode.core.annotation.beans.observable.ObserverListenerMethod;
+import com.raos.autocode.core.annotation.beans.property.BeanProperty;
+import com.raos.autocode.core.annotation.beans.property.ReadOnly;
 import com.raos.autocode.core.beans.property.Property;
 import com.raos.autocode.core.beans.property.event.PropertyChangeHandler;
 

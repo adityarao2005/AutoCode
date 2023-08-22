@@ -1,21 +1,28 @@
 package com.raos.autocode.core.beans.property.bindings;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-import com.raos.autocode.core.beans.PropertyFactory;
-import com.raos.autocode.core.beans.property.BindableProperty;
 import com.raos.autocode.core.beans.property.ObservableProperty;
 import com.raos.autocode.core.beans.property.Property;
-import com.raos.autocode.core.beans.property.event.PropertyChangeListener;
 
-// Warning, bidirectional bindings not supported yet
+// All bindings supported via ObservableProperty
 public final class Bindings {
-	private static final Map<Integer, ObservableProperty<?>> BOUND_PROPERTIES = new HashMap<>();
-	private static final Map<Integer, PropertyChangeListener<?>> BOUND_LAMBDAS = new HashMap<>();
+	// Map to signify which property has been bound to which
+	protected static final Map<Integer, BindingSupport<?, ?>> BINDING_CONTRACT_MANAGER = new ConcurrentHashMap<>();
 
 	private Bindings() {
+	}
+
+	// Binds the properties
+	public static boolean isBound(Property<?> bound) {
+		return BINDING_CONTRACT_MANAGER.containsKey(System.identityHashCode(bound));
+	}
+
+	// Gets the binding support
+	public static BindingSupport<?, ?> getBindingSupport(Property<?> property) {
+		return BINDING_CONTRACT_MANAGER.get(System.identityHashCode(property));
 	}
 
 	// Binds the properties
@@ -23,43 +30,60 @@ public final class Bindings {
 		bindUnrelated(bound, binder, Function.identity());
 	}
 
+	// Binds the properties
+	public static <T> void bindBiDirectional(Property<T> bound, Property<T> binder) {
+		bindBiDirectionalUnrelated(bound, binder, Function.identity(), Function.identity());
+	}
+
 	// Bind unrelationed properties
 	public static <T, V> void bindUnrelated(Property<T> bound, Property<V> binder, Function<V, T> converter) {
-		if (bound instanceof BindableProperty && binder instanceof ObservableProperty) {
-			// Add proxy
-			ObservableProperty<T> proxy = PropertyFactory.createBindableProperty("Bindings_" + bound.getName(),
-					bound.getType());
+		// Check whether both of these are already bound values
+		if (bound instanceof ObservableProperty && binder instanceof ObservableProperty) {
+			// Set bound
+			if (isBound(bound))
+				throw new BindingException("The property to be bound is already bound. Unbind first");
 
-			// Add the listener
-			PropertyChangeListener<V> listener = (prop, oldv, newv) -> {
-				proxy.set(converter.apply(newv));
-			};
+			BindingSupport<T, V> bindings = new UniDirectionalBinding<>(bound, binder, converter);
+			bindings.bind();
 
-			// Add binding listener
-			((ObservableProperty<V>) binder).getListeners().add(listener);
+		} else {
+			// Throw exception
+			throw new BindingException(
+					"either the bound property is not an observable property or the binder is not an observable property");
+		}
+	}
 
-			// Add the bindings to the maps
-			BOUND_LAMBDAS.put(PropertyFactory.deepHashCode(bound), listener);
-			BOUND_PROPERTIES.put(PropertyFactory.deepHashCode(bound), ((ObservableProperty<V>) binder));
+	// Bind unrelationed properties
+	public static <T, V> void bindBiDirectionalUnrelated(Property<T> bound, Property<V> binder,
+			Function<V, T> converterF, Function<T, V> converterB) {
+		// Check whether both of these are already bound values
+		if (bound instanceof ObservableProperty && binder instanceof ObservableProperty) {
+			// Set bound
+			if (isBound(bound) || isBound(binder))
+				throw new BindingException("The property to be bound is already bound. Unbind first");
 
-			// Bind to the proxy
-			((BindableProperty<T>) bound).bind(proxy);
-		} else
-			throw new IllegalArgumentException(
-					"either the bound property is not a bindable property or the binder is not an observable property");
+			BindingSupport<T, V> bindings = new BiDirectionalBinding<>(bound, binder, converterF, converterB);
+			bindings.bind();
+
+		} else {
+			// Throw exception
+			throw new BindingException(
+					"either the bound property is not an observable property or the binder is not an observable property");
+		}
 	}
 
 	// Unbind property
 	public static <T> void unbind(Property<T> bound) {
-		if (bound instanceof BindableProperty) {
-			((BindableProperty<T>) bound).unbind();
 
-			int deepHash = PropertyFactory.deepHashCode(bound);
+		if (bound instanceof ObservableProperty) {
 
-			ObservableProperty<?> prop = BOUND_PROPERTIES.remove(deepHash);
-			prop.getListeners().remove(BOUND_LAMBDAS.remove(deepHash));
+			// Remove listener and filter and bound property
+			BindingSupport<?, ?> bindings = getBindingSupport(bound);
+			bindings.unbind();
 
-		} else
-			throw new IllegalArgumentException("the property passed is not a bindable property");
+		} else {
+			throw new BindingException("the property passed is not a bindable property");
+		}
 	}
+
 }

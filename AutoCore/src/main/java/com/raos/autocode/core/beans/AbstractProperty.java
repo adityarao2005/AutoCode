@@ -116,10 +116,6 @@ abstract class AbstractProperty<T> implements Property<T> {
 		return Objects.hash(value);
 	}
 
-	public int deepHashCode() {
-		return Objects.hash(bean, name, nullable, type, value);
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -130,13 +126,6 @@ abstract class AbstractProperty<T> implements Property<T> {
 			return false;
 		AbstractProperty<?> other = (AbstractProperty<?>) obj;
 		return Objects.equals(type, other.type) && Objects.equals(value, other.value);
-	}
-
-	public boolean deepEquals(AbstractProperty<?> obj) {
-		if (!equals(obj))
-			return false;
-
-		return Objects.equals(bean, obj.bean) && Objects.equals(name, obj.name);
 	}
 
 	@Override

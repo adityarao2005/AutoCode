@@ -8,15 +8,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.raos.autocode.core.annotation.beans.BeanProperty;
-import com.raos.autocode.core.annotation.beans.Bindable;
-import com.raos.autocode.core.annotation.beans.Observable;
-import com.raos.autocode.core.annotation.beans.ObserverListenerClass;
-import com.raos.autocode.core.annotation.beans.ObserverListenerMethod;
-import com.raos.autocode.core.annotation.beans.ReadOnly;
+import com.raos.autocode.core.annotation.beans.observable.Observable;
+import com.raos.autocode.core.annotation.beans.observable.ObserverFilterClass;
+import com.raos.autocode.core.annotation.beans.observable.ObserverFilterMethod;
+import com.raos.autocode.core.annotation.beans.observable.ObserverListenerClass;
+import com.raos.autocode.core.annotation.beans.observable.ObserverListenerMethod;
+import com.raos.autocode.core.annotation.beans.property.BeanProperty;
+import com.raos.autocode.core.annotation.beans.property.ReadOnly;
 import com.raos.autocode.core.annotations.ToDo;
-import com.raos.autocode.core.annotation.beans.ObserverFilterClass;
-import com.raos.autocode.core.annotation.beans.ObserverFilterMethod;
 import com.raos.autocode.core.beans.property.ObservableProperty;
 import com.raos.autocode.core.beans.property.Property;
 import com.raos.autocode.core.beans.property.PropertyManager;
@@ -123,18 +122,11 @@ final class BeanDelegate {
 		boolean readOnly = m.isAnnotationPresent(ReadOnly.class);
 
 		// Check if this is observable
-		if (m.isAnnotationPresent(Observable.class) || m.isAnnotationPresent(Bindable.class)) {
+		if (m.isAnnotationPresent(Observable.class)) {
 
 			// Create a new observable property
-			ObservableProperty<T> property;
-
-			// If its bindable then create a bindable property
-			if (m.isAnnotationPresent(Bindable.class))
-				property = new BindablePropertyImpl<>(m.getName(), (PropertyManager) bean, propertyType, nullable,
-						readOnly);
-			else
-				property = new ObservablePropertyImpl<>(m.getName(), (PropertyManager) bean, propertyType, nullable,
-						readOnly);
+			ObservableProperty<T> property = new ObservablePropertyImpl<>(m.getName(), (PropertyManager) bean,
+					propertyType, nullable, readOnly);
 
 			initObservableProperty(m, property);
 
