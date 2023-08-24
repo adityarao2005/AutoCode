@@ -1,4 +1,4 @@
-package com.raos.autocode.core.annotation.beans.property;
+package com.raos.autocode.core.deprecated.annotation.beans;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -6,19 +6,14 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.util.function.UnaryOperator;
 
 import com.raos.autocode.core.annotations.ClassPreamble;
-import com.raos.autocode.core.annotations.ToDo;
 
-// TODO: implement this in the beans stuff
-@ToDo(description = "implement this")
+@Deprecated(forRemoval = true)
 @ClassPreamble(author = "Aditya Rao", date = "8/9/2023")
 @Documented
 @Retention(RUNTIME)
 @Target(METHOD)
-public @interface DecoratorClass {
+public @interface Init {
 
-	// Decorator class
-	Class<? extends UnaryOperator<?>> decoratorClass();
 }

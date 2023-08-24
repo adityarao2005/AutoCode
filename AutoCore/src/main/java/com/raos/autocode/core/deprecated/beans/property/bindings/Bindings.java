@@ -1,4 +1,4 @@
-package com.raos.autocode.core.beans.property.bindings;
+package com.raos.autocode.core.deprecated.beans.property.bindings;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,6 +8,7 @@ import com.raos.autocode.core.beans.property.ObservableProperty;
 import com.raos.autocode.core.beans.property.Property;
 
 // All bindings supported via ObservableProperty
+@Deprecated(forRemoval = true)
 public final class Bindings {
 	// Map to signify which property has been bound to which
 	protected static final Map<Integer, BindingSupport<?, ?>> BINDING_CONTRACT_MANAGER = new ConcurrentHashMap<>();

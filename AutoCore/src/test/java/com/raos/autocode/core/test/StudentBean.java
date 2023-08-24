@@ -10,6 +10,7 @@ import com.raos.autocode.core.annotation.beans.observable.ObserverFilterMethod;
 import com.raos.autocode.core.annotation.beans.observable.ObserverListenerClass;
 import com.raos.autocode.core.annotation.beans.observable.ObserverListenerMethod;
 import com.raos.autocode.core.annotation.beans.property.BeanProperty;
+import com.raos.autocode.core.annotation.beans.property.NonNull;
 import com.raos.autocode.core.annotation.beans.property.ReadOnly;
 import com.raos.autocode.core.beans.property.Property;
 import com.raos.autocode.core.beans.property.event.PropertyChangeHandler;
@@ -23,7 +24,8 @@ public interface StudentBean {
 	// 	- describes whether this is null or what the type is
 	// @ReadOnly
 	//  - describes that only the StudentBean class can modify the field username
-	@BeanProperty(nullable = false, type = String.class)
+	@NonNull
+	@BeanProperty(type = String.class)
 	@ReadOnly
 	public Property<String> username();
 
@@ -32,11 +34,13 @@ public interface StudentBean {
 	@Observable
 	@ObserverListenerMethod(methodName = "passwordChanged")
 	@ObserverFilterMethod(methodName = "validatePassword", errorMessage = "Error! password not good")
-	@BeanProperty(nullable = false, type = String.class)
+	@NonNull
+	@BeanProperty(type = String.class)
 	public Property<String> password();
 
 	@Observable
-	@BeanProperty(nullable = false, type = Integer.class)
+	@NonNull
+	@BeanProperty(type = Integer.class)
 	@ObserverListenerClass(listenerClass = AgeHandler.class)
 	@ObserverFilterClass(filterClass = AgeHandler.class)
 	public Property<Integer> age();

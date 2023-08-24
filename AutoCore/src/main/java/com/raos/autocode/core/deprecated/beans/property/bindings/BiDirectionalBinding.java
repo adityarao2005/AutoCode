@@ -1,4 +1,4 @@
-package com.raos.autocode.core.beans.property.bindings;
+package com.raos.autocode.core.deprecated.beans.property.bindings;
 
 import java.util.function.Function;
 
@@ -6,6 +6,7 @@ import com.raos.autocode.core.beans.property.Property;
 import com.raos.autocode.core.beans.property.event.PropertyChangeListener;
 
 // Creates a unidirectional binding
+@Deprecated(forRemoval = true)
 public final class BiDirectionalBinding<T, V> extends BindingSupport<T, V> {
 	// generic listener
 	private boolean call;

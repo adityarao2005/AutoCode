@@ -14,6 +14,7 @@ import com.raos.autocode.core.annotation.beans.observable.ObserverFilterMethod;
 import com.raos.autocode.core.annotation.beans.observable.ObserverListenerClass;
 import com.raos.autocode.core.annotation.beans.observable.ObserverListenerMethod;
 import com.raos.autocode.core.annotation.beans.property.BeanProperty;
+import com.raos.autocode.core.annotation.beans.property.NonNull;
 import com.raos.autocode.core.annotation.beans.property.ReadOnly;
 import com.raos.autocode.core.annotations.ToDo;
 import com.raos.autocode.core.beans.property.ObservableProperty;
@@ -117,7 +118,7 @@ final class BeanDelegate {
 
 		// Get the class and nullable
 		Class<T> propertyType = (Class<T>) annotation.type();
-		boolean nullable = annotation.nullable();
+		boolean nullable = m.isAnnotationPresent(NonNull.class);
 
 		boolean readOnly = m.isAnnotationPresent(ReadOnly.class);
 

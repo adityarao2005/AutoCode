@@ -1,4 +1,4 @@
-package com.raos.autocode.core.annotation.beans.bindings;
+package com.raos.autocode.core.deprecated.annotation.beans.bindings;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -10,6 +10,7 @@ import java.util.function.Function;
 
 import com.raos.autocode.core.annotations.ClassPreamble;
 
+@Deprecated(forRemoval = true)
 @ClassPreamble(author = "Aditya Rao", date = "8/21/2023")
 @SuppressWarnings("rawtypes")
 @Documented

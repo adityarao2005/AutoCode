@@ -1,4 +1,4 @@
-package com.raos.autocode.core.beans.property.bindings;
+package com.raos.autocode.core.deprecated.beans.property.bindings;
 
 import java.util.function.Function;
 
@@ -6,6 +6,7 @@ import com.raos.autocode.core.beans.property.ObservableProperty;
 import com.raos.autocode.core.beans.property.Property;
 
 // Binding Support, to aid in bindings
+@Deprecated(forRemoval = true)
 public abstract class BindingSupport<T, V> {
 
 	// Properties

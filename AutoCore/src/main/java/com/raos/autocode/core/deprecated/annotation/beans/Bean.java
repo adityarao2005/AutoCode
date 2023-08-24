@@ -1,4 +1,4 @@
-package com.raos.autocode.core.annotation.beans;
+package com.raos.autocode.core.deprecated.annotation.beans;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -14,6 +14,7 @@ import com.raos.autocode.core.annotations.ClassPreamble;
  * @author Raos
  *
  */
+@Deprecated(forRemoval = true)
 @ClassPreamble(author = "Aditya Rao", currentRevision = 1, date = "Jun 20, 2023")
 @Documented
 @Retention(RUNTIME)
