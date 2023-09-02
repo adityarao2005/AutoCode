@@ -6,7 +6,12 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-// Builder for any object
+/**
+ * Abstract implementation of Builder
+ * @author Raos
+ *
+ * @param <T>
+ */
 public abstract class AbstractBuilder<T> implements GenericBuilder<T> {
 	// Properties
 	protected Map<String, Object> properties;

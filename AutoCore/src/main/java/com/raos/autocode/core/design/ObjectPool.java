@@ -9,7 +9,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// Represents an object pool, creates a bunch of reusable objects
+import com.raos.autocode.core.annotations.ClassPreamble;
+
+/**
+ * Represents an object pool, creates a bunch of reusable objects
+ * 
+ * @author Raos
+ *
+ * @param <T> any closeable or expensive resource
+ */
+@ClassPreamble(author = "Aditya Rao", date = "7/5/2023")
 public abstract class ObjectPool<T extends AutoCloseable> implements AutoCloseable {
 	// Logger
 	private static final Logger LOGGER = Logger.getLogger(ObjectPool.class.getName());
@@ -43,7 +52,12 @@ public abstract class ObjectPool<T extends AutoCloseable> implements AutoCloseab
 
 	}
 
-	// Get an object
+	/**
+	 * Gets the poolable object
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	public PoolableObject get() throws Exception {
 		// If the maximum connections are being used.. return null and alert user
 		if (openSet.size() >= maxOpen) {
@@ -66,32 +80,51 @@ public abstract class ObjectPool<T extends AutoCloseable> implements AutoCloseab
 		}
 	}
 
-	// To create a new Instance
+	/**
+	 * @return an instance
+	 */
 	protected abstract T newInstance();
 
-	// Create a new poolable object
-	// Default implementation
-	// meant to be overriden for more complicated structures
+	/**
+	 * Create a new poolable object. Default implementation. meant to be overriden
+	 * for more complicated structures
+	 * 
+	 * @param instance - new instance
+	 * @return a new poolable object
+	 */
 	protected PoolableObject create(T instance) {
 		return new PoolableObject(instance);
 	}
 
-	// Create the poolable object
+	/**
+	 * The poolable object
+	 * 
+	 * @author Raos
+	 *
+	 */
 	public class PoolableObject implements AutoCloseable {
 		// Value
 		private T value;
 
-		// Ctor
+		/**
+		 * Accepts a value
+		 * 
+		 * @param value
+		 */
 		public PoolableObject(T value) {
 			this.value = value;
 		}
 
-		// Get value
+		/**
+		 * @return the accepted value
+		 */
 		public T getValue() {
 			return value;
 		}
 
-		// On close, add value back to queue and remove from set
+		/**
+		 * On close, add value back to queue and remove from set
+		 */
 		@Override
 		public void close() throws Exception {
 			// If the size of the idleQueue is less than the maxIdle, then add
@@ -107,6 +140,9 @@ public abstract class ObjectPool<T extends AutoCloseable> implements AutoCloseab
 
 	}
 
+	/**
+	 * Interupts all existing resources and closes them
+	 */
 	@Override
 	public void close() throws Exception {
 

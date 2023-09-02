@@ -10,57 +10,106 @@ import java.lang.reflect.Method;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.raos.autocode.core.annotations.ClassPreamble;
 import com.raos.autocode.core.beans.property.Property;
 import com.raos.autocode.core.beans.property.PropertyManager;
 import com.raos.autocode.core.util.ExceptionUtil;
 
-// Wraps a java bean property
+/**
+ * Wraps a property and acts as a handle to the property
+ * 
+ * @author Raos
+ *
+ * @param <T> - The type of the property wrapped
+ */
+@ClassPreamble(author = "Aditya Rao", date = "7/5/2023")
 public class JavaBeanPropertyWrapper<T> implements Property<T> {
+	// Allows for accessing the property
 	private JavaBeanPropertyAccessor<T> accessor;
+	// Reference to the manager if present
+	private JavaBeanPropertyManager manager;
 
-	public JavaBeanPropertyWrapper(JavaBeanPropertyAccessor<T> accessor) {
+	/**
+	 * Creates a property wrapper
+	 * 
+	 * @param accessor - Allows for accessing and mutating java bean property
+	 * @param manager  - a java bean property manager (optional)
+	 */
+	public JavaBeanPropertyWrapper(JavaBeanPropertyAccessor<T> accessor, JavaBeanPropertyManager manager) {
 		this.accessor = accessor;
+		this.manager = manager;
 	}
 
+	/**
+	 * Gets the value of the property
+	 */
 	@Override
 	public T get() {
 		return accessor.getValue();
 	}
 
+	/**
+	 * Sets the value of the property
+	 */
 	@Override
 	public void set(Object value) {
 		accessor.setValue(value);
 	}
 
+	/**
+	 * Gets the name of the property
+	 */
 	@Override
 	public String getName() {
 		return accessor.getName();
 	}
 
-	// No bean
+	/**
+	 * Gets the owner/bean of the property
+	 */
 	@Override
 	public PropertyManager getBean() {
-		return null;
+		return manager;
 	}
 
+	/**
+	 * Gets the type of the property
+	 */
 	@Override
 	public Class<T> getType() {
 		return accessor.getType();
 	}
 
+	/**
+	 * Allows for accessing and mutating of a property
+	 */
 	// Accesses and Mutates the bean via the bean wrapper
 	public static interface JavaBeanPropertyAccessor<T> {
 
+		/**
+		 * Gets the value of the property
+		 */
 		T getValue();
 
+		/**
+		 * Sets the value of the property
+		 */
 		void setValue(Object value);
 
+		/**
+		 * Gets the name of the property
+		 */
 		String getName();
 
+		/**
+		 * Gets the type of the property
+		 */
 		Class<T> getType();
 	}
 
-	// Var handle variable access
+	/**
+	 * Gets access to property via VarHandle API
+	 */
 	public static class VarHandleVariableAccessor<T> implements JavaBeanPropertyAccessor<T> {
 		private VarHandle varHandle;
 		private Object bean;
@@ -99,7 +148,9 @@ public class JavaBeanPropertyWrapper<T> implements Property<T> {
 
 	}
 
-	// Var handle variable access
+	/**
+	 * Gets access to property via MethodHandle API
+	 */
 	public static class MethodHandleAccessor<T> implements JavaBeanPropertyAccessor<T> {
 		private MethodHandle getterHandle;
 		private MethodHandle setterHandle;
@@ -142,7 +193,9 @@ public class JavaBeanPropertyWrapper<T> implements Property<T> {
 
 	}
 
-	// Var handle variable access
+	/**
+	 * Gets access to property via PropertyDescriptor API
+	 */
 	public static class PropertyDescriptorAccessor<T> implements JavaBeanPropertyAccessor<T> {
 		private Method getterHandle;
 		private Method setterHandle;
@@ -150,13 +203,15 @@ public class JavaBeanPropertyWrapper<T> implements Property<T> {
 		private String name;
 
 		public PropertyDescriptorAccessor(Object bean, String name) {
+			this(bean, ExceptionUtil.throwSilently(() -> new PropertyDescriptor(name, bean.getClass())).get());
+		}
 
-			getterHandle = ExceptionUtil
-					.throwSilently(() -> new PropertyDescriptor(name, bean.getClass()).getReadMethod()).get();
-			setterHandle = ExceptionUtil
-					.throwSilently(() -> new PropertyDescriptor(name, bean.getClass()).getWriteMethod()).get();
+		public PropertyDescriptorAccessor(Object bean, PropertyDescriptor descriptor) {
+
+			getterHandle = descriptor.getReadMethod();
+			setterHandle = descriptor.getWriteMethod();
 			this.bean = bean;
-			this.name = name;
+			this.name = descriptor.getName();
 		}
 
 		@SuppressWarnings("unchecked")
@@ -183,7 +238,10 @@ public class JavaBeanPropertyWrapper<T> implements Property<T> {
 
 	}
 
-	// Var handle variable access
+	/**
+	 * Gets access to property using a Supplier and a Consumer to act as getter and
+	 * setter
+	 */
 	public static class FunctionalAccessor<T> implements JavaBeanPropertyAccessor<T> {
 		private Supplier<T> getterHandle;
 		private Consumer<T> setterHandle;
@@ -220,7 +278,9 @@ public class JavaBeanPropertyWrapper<T> implements Property<T> {
 
 	}
 
-	// Var handle variable access
+	/**
+	 * Gets access to property via Reflection
+	 */
 	public static class ReflectionVariableAccessor<T> implements JavaBeanPropertyAccessor<T> {
 		private Field varHandle;
 		private Object bean;

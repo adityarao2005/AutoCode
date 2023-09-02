@@ -1,12 +1,17 @@
 package com.raos.autocode.core.design;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.raos.autocode.core.annotations.ClassPreamble;
-import com.raos.autocode.core.util.MapBuilder;
 
-// Creates a new SerializedState
+/**
+ * Creates a new SerializedState. States are like properties or entries
+ * 
+ * @author Raos
+ *
+ */
 @ClassPreamble(author = "Aditya Rao", date = "8/21/2023")
 public class SerializedState implements State, Serializable {
 	private static final long serialVersionUID = 1L;
@@ -15,17 +20,18 @@ public class SerializedState implements State, Serializable {
 	private SerializedState previous;
 	private SerializedState next;
 	// properties
-	private Map<String, Object> properties;
+	private String property;
+	private Object value;
 
-	// Create beginning of states
-	// starts null
-	public SerializedState() {
-		this(Map.of());
-	}
-
-	// Create a new map
-	private SerializedState(Map<String, Object> properties) {
-		this.properties = properties;
+	/**
+	 * Creates a new state with a default state values
+	 * 
+	 * @param property
+	 * @param value
+	 */
+	public SerializedState(String property, Object value) {
+		this.property = property;
+		this.value = value;
 	}
 
 	@Override
@@ -47,7 +53,7 @@ public class SerializedState implements State, Serializable {
 	@Override
 	public State makeChange(String property, Object value) {
 		cutOfHead();
-		SerializedState next = new SerializedState(MapBuilder.create(properties).addEntry(property, value).build());
+		SerializedState next = new SerializedState(property, value);
 		this.setNext(next);
 		return next;
 	}
@@ -56,6 +62,29 @@ public class SerializedState implements State, Serializable {
 	private void cutOfHead() {
 		next.previous = null;
 		next = null;
+	}
+
+	/**
+	 * Basically gets the most recent states and persists that
+	 * 
+	 * @param thiz
+	 * @return
+	 */
+	public static Map<String, Object> compileStates(SerializedState thiz) {
+		SerializedState prev = thiz;
+		Map<String, Object> map = new HashMap<>();
+
+		// While there isnt any more previous values
+		while (prev != null) {
+			// Adds newest change to map
+			map.putIfAbsent(prev.property, prev.value);
+
+			// Get the previous state
+			prev = prev.previous;
+		}
+
+		// Return the map
+		return map;
 	}
 
 }

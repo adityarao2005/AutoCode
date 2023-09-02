@@ -92,7 +92,7 @@ public class ReflectionUtil {
 		return StackWalker.getInstance(Set.of(StackWalker.Option.RETAIN_CLASS_REFERENCE))
 				.walk(str -> checkCallerFrame(str, caller));
 	}
-	
+
 	public static boolean checkCallerFrameMax(Stream<StackFrame> stackframes, int maxLevels, Class<?> caller) {
 		return stackframes.limit(maxLevels).map(StackFrame::getDeclaringClass).anyMatch(caller::equals);
 	}
@@ -100,5 +100,22 @@ public class ReflectionUtil {
 	public static boolean checkCallerMax(Class<?> caller, int maxLevels) {
 		return StackWalker.getInstance(Set.of(StackWalker.Option.RETAIN_CLASS_REFERENCE))
 				.walk(str -> checkCallerFrameMax(str, maxLevels, caller));
+	}
+
+	public static Annotation[] getAnnotations(AnnotatedElement element) {
+		return element.getAnnotations();
+	}
+
+	public static Stream<Annotation> getAnnotationsStreamed(AnnotatedElement element) {
+		return Arrays.stream(getAnnotations(element));
+	}
+
+	public static Stream<Annotation> getAnnotationsWithStreamed(AnnotatedElement element,
+			Class<? extends Annotation> annotation) {
+		return getAnnotationsStreamed(element).filter(t -> t.annotationType().isAnnotationPresent(annotation));
+	}
+
+	public static Annotation[] getAnnotationsWith(AnnotatedElement element, Class<? extends Annotation> annotation) {
+		return getAnnotationsWithStreamed(element, annotation).toArray(Annotation[]::new);
 	}
 }

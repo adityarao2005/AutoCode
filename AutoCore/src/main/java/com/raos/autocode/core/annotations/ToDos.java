@@ -7,6 +7,11 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+/**
+ * Allows ppl to have mulitple tasks to be finished
+ * @author Raos
+ *
+ */
 @ClassPreamble(author = "Aditya Rao", date = "8/9/2023")
 @Documented
 @Retention(SOURCE)

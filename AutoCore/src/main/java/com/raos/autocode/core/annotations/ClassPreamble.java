@@ -7,6 +7,11 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+/**
+ * Allows ppl to give details as to who wrote the code and when it was written
+ * @author Raos
+ *
+ */
 @ClassPreamble(author = "Aditya Rao", date = "8/9/2023")
 @Documented
 @Retention(SOURCE)
