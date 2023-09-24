@@ -6,6 +6,11 @@ import java.util.function.Supplier;
 
 import com.raos.autocode.core.util.functional.Callback;
 
+/**
+ * Utility class for exception handling
+ * @author aditya
+ *
+ */
 public final class ExceptionUtil {
 	private ExceptionUtil() {
 

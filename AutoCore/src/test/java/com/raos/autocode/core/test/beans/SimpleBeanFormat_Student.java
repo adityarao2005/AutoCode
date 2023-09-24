@@ -1,11 +1,11 @@
 package com.raos.autocode.core.test.beans;
 
-import com.raos.autocode.core.annotation.beans.Destructor;
-import com.raos.autocode.core.annotation.beans.Init;
-import com.raos.autocode.core.annotation.beans.property.NonNull;
-import com.raos.autocode.core.annotation.beans.property.ReadOnly;
-import com.raos.autocode.core.beans.property.ObservableProperty;
+import com.raos.autocode.core.annotations.beans.property.NonNull;
 import com.raos.autocode.core.beans.property.Property;
+import com.raos.autocode.core.beans.property.flavour.OVProperty;
+import com.raos.autocode.core.beans.property.flavour.ObservableProperty;
+import com.raos.autocode.core.beans.property.flavour.ReadOnlyProperty;
+import com.raos.autocode.core.beans.property.flavour.ValidatableProperty;
 
 // Everything about the bean is return type based with the exception of a few annotations
 // The structure for these are based on 3 categories
@@ -35,13 +35,13 @@ public interface SimpleBeanFormat_Student {
 
 	// Interceptable property
 	@NonNull
-	InterceptableProperty<String> password();
+	ValidatableProperty<String> password();
 
 	@NonNull
 	ObservableProperty<Integer> age();
 
 	// Observable and interceptable property
-	OIProperty<Integer> avg();
+	OVProperty<Integer> avg();
 
 	// List property invocation
 	ListProperty<String> classes();

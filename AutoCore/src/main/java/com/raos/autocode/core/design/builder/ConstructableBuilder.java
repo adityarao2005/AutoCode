@@ -2,9 +2,11 @@ package com.raos.autocode.core.design.builder;
 
 import java.beans.Expression;
 
+import com.raos.autocode.core.annotations.ClassPreamble;
 import com.raos.autocode.core.util.ExceptionUtil;
 
 // Create a new constructable builder - builder which invokes a specialized constructor
+@ClassPreamble(author = "Aditya Rao", date = "2023-07-05")
 public class ConstructableBuilder<T> extends AbstractBuilder<T> {
 	// Fields
 	private Object[] ctorArgs;

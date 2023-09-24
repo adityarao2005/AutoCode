@@ -12,7 +12,15 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-// Classpath Searching tool
+import com.raos.autocode.core.annotations.ClassPreamble;
+
+/**
+ * Classpath Searching tool
+ * 
+ * @author aditya
+ *
+ */
+@ClassPreamble(author = "Aditya Rao", date = "2023-07-05")
 public final class ClasspathUtil {
 	// Loading classes is expensive
 	private static Set<Class<?>> classes;
@@ -22,7 +30,12 @@ public final class ClasspathUtil {
 		throw new IllegalAccessError("Not supposed to be accessed");
 	}
 
-	// Check for instantiability
+	/**
+	 * Check for instantiability
+	 * 
+	 * @param clz
+	 * @return
+	 */
 	public static boolean isInstantiable(Class<?> clz) {
 		if (clz.isPrimitive() || Modifier.isAbstract(clz.getModifiers()) || clz.isInterface() || clz.isArray()) {
 			return false;
@@ -31,7 +44,14 @@ public final class ClasspathUtil {
 		return true;
 	}
 
-	// Find all concrete implementations of a classs
+	/**
+	 * Find all concrete implementations of a class
+	 * 
+	 * @param <T>
+	 * @param clazz
+	 * @return
+	 * @throws IOException
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Set<Class<? extends T>> findAllConcreteInstances(Class<T> clazz) throws IOException {
 
@@ -40,7 +60,12 @@ public final class ClasspathUtil {
 				.map(e -> (Class<? extends T>) e).collect(Collectors.toSet());
 	}
 
-	// Scans the class path
+	/**
+	 * Scans the class path
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
 	public static Set<Class<?>> scanClassPath() throws IOException {
 		// Lazy load
 		if (classes != null)

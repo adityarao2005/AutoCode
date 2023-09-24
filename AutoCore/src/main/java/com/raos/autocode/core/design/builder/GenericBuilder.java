@@ -1,5 +1,7 @@
 package com.raos.autocode.core.design.builder;
 
+import com.raos.autocode.core.annotations.ClassPreamble;
+
 /**
  * Represents a generic builder
  * 
@@ -7,6 +9,7 @@ package com.raos.autocode.core.design.builder;
  *
  * @param <T>
  */
+@ClassPreamble(author = "Aditya Rao", date = "2023-07-05")
 public interface GenericBuilder<T> extends Builder<T> {
 
 	@Override

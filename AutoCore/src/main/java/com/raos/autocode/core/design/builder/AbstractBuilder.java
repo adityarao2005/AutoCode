@@ -6,12 +6,16 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.raos.autocode.core.annotations.ClassPreamble;
+
 /**
  * Abstract implementation of Builder
+ * 
  * @author Raos
  *
  * @param <T>
  */
+@ClassPreamble(author = "Aditya Rao", date = "2023-07-05")
 public abstract class AbstractBuilder<T> implements GenericBuilder<T> {
 	// Properties
 	protected Map<String, Object> properties;
@@ -28,7 +32,12 @@ public abstract class AbstractBuilder<T> implements GenericBuilder<T> {
 		return this;
 	}
 
-	// Copy from another builder
+	/**
+	 * Copy from another builder
+	 * 
+	 * @param other
+	 * @return
+	 */
 	public AbstractBuilder<T> copy(AbstractBuilder<T> other) {
 		properties.putAll(other.properties);
 
@@ -63,7 +72,12 @@ public abstract class AbstractBuilder<T> implements GenericBuilder<T> {
 
 	}
 
-	// Get from prototype
+	/**
+	 * Get from prototype
+	 * 
+	 * @param prototype
+	 * @return
+	 */
 	public AbstractBuilder<T> from(T prototype) {
 		// Clear properties
 		properties.clear();
