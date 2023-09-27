@@ -3,10 +3,17 @@ package com.raos.autocode.core.util;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.raos.autocode.core.annotations.ClassPreamble;
 import com.raos.autocode.core.annotations.ToDo;
 
-@ToDo(description = "Create, understand, and add the following functions to the String Util class.. prefixFunction, kmpAlgorithm, zAlgorithm")
-// Provides some utilities for the string data type
+/**
+ * Provides some utilities for the string data type
+ * 
+ * @author aditya
+ *
+ */
+@ToDo(description = "Create, understand, and add the following functions to the String Util class.. prefixFunction, kmp Algorithm, z Algorithm")
+@ClassPreamble(author = "Aditya Rao", date = "2023-07-05")
 public interface StringUtil {
 	// Limit for hashing
 	public static long LIMIT = (long) 1e9 + 9;

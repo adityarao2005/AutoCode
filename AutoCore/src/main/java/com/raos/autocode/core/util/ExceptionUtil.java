@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.raos.autocode.core.annotations.ClassPreamble;
 import com.raos.autocode.core.util.functional.Callback;
 
 /**
@@ -11,37 +12,70 @@ import com.raos.autocode.core.util.functional.Callback;
  * @author aditya
  *
  */
-public final class ExceptionUtil {
-	private ExceptionUtil() {
+@ClassPreamble(author = "Aditya Rao", date = "2023-07-05")
+public interface ExceptionUtil {
 
-	}
-
+	/**
+	 * Throwing Runnable
+	 * 
+	 * @author aditya
+	 *
+	 */
 	public static interface TRunnable {
 		void run() throws Throwable;
 	}
 
+	/**
+	 * Throwing Supplier
+	 * 
+	 * @author aditya
+	 *
+	 */
 	public static interface TSupplier<V> {
 
 		V get() throws Throwable;
 	}
 
+
+	/**
+	 * Throwing Consumer
+	 * 
+	 * @author aditya
+	 *
+	 */
 	public static interface TConsumer<V> {
 		void accept(V v) throws Throwable;
 	}
 
+
+	/**
+	 * Throwing Function
+	 * 
+	 * @author aditya
+	 *
+	 */
 	public static interface TFunction<R, V> extends Callback<R, V> {
 
 	}
 
+
+	/**
+	 * Throwing BiPredicate
+	 * 
+	 * @author aditya
+	 *
+	 */
 	public static interface TBiPredicate<R, V> {
 		boolean test(R r, V v) throws Throwable;
 	}
 
-	public static interface TTriConsumer<R, V, E> {
-		void accept(R r, V v, E e) throws Throwable;
-	}
-
-	// Throw silently
+	/**
+	 * Execute the function and throw silently
+	 * 
+	 * @param <T>
+	 * @param supplier
+	 * @return
+	 */
 	public static <T> Supplier<T> throwSilently(TSupplier<T> supplier) {
 		return () -> {
 			try {
@@ -52,7 +86,13 @@ public final class ExceptionUtil {
 		};
 	}
 
-	// Throw silently
+	/**
+	 * Execute and get result from the function and throw silently
+	 * 
+	 * @param <T>
+	 * @param supplier
+	 * @return
+	 */
 	public static <T> T throwSilentlyAndGet(TSupplier<T> supplier) {
 		try {
 			return supplier.get();
@@ -61,7 +101,13 @@ public final class ExceptionUtil {
 		}
 	}
 
-	// Throw silently
+	/**
+	 * Execute the function and throw silently
+	 * 
+	 * @param <T>
+	 * @param supplier
+	 * @return
+	 */
 	public static <T> Runnable throwSilently(TRunnable supplier) {
 		return () -> {
 			try {
@@ -72,7 +118,14 @@ public final class ExceptionUtil {
 		};
 	}
 
-	// Throw silently
+
+	/**
+	 * Execute the function, get the result and throw silently
+	 * 
+	 * @param <T>
+	 * @param supplier
+	 * @return
+	 */
 	public static <T> Consumer<T> throwSilently(TConsumer<T> supplier) {
 		return (v) -> {
 			try {
@@ -83,7 +136,14 @@ public final class ExceptionUtil {
 		};
 	}
 
-	// Throw silently
+
+	/**
+	 * Execute the function, get the result and throw silently
+	 * 
+	 * @param <T>
+	 * @param supplier
+	 * @return
+	 */
 	public static <T, V> Function<T, V> throwSilently(TFunction<T, V> supplier) {
 		return (t) -> {
 			try {
@@ -94,7 +154,14 @@ public final class ExceptionUtil {
 		};
 	}
 
-	// Throw silently
+
+	/**
+	 * Execute the function, get the result and throw silently
+	 * 
+	 * @param <T>
+	 * @param supplier
+	 * @return
+	 */
 	public static <T, V> V throwSilentlyAndGet(TFunction<T, V> supplier, T arg) {
 		try {
 			return supplier.call(arg);

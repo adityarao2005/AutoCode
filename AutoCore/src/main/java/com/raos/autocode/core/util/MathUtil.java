@@ -3,17 +3,27 @@ package com.raos.autocode.core.util;
 import java.math.BigInteger;
 import java.util.Collection;
 
-// Basic math utilities that the regular java.util.Math class does not have
+import com.raos.autocode.core.annotations.ClassPreamble;
+
+/**
+ * Basic math utilities that the regular java.util.Math class does not have
+ * 
+ * @author aditya
+ *
+ */
+@ClassPreamble(author = "Aditya Rao", date = "2023-07-05")
 public final class MathUtil {
 
 	private MathUtil() {
 	}
-	
-	static {
-		System.err.println("Loaded");
-	}
 
-	// Uses Euclids algorithm to find gcd
+	/**
+	 * Uses Euclids algorithm to find gcd
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	public static int gcd(int a, int b) {
 		// Get the maximum value
 		int max = Math.max(a, b);
@@ -32,13 +42,18 @@ public final class MathUtil {
 		return gcd(min, max % min);
 	}
 
-	// Incorporates Euclid's GCD into LCM using
-	// LCM * GCD = a * b
+	/**
+	 * Incorporates Euclid's GCD into LCM using LCM * GCD = a * b
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	public static int lcm(int a, int b) {
 		return a * b / (gcd(a, b));
 	}
 
-	// For factorial method
+	// Factorials
 	private static BigInteger[] factorials = new BigInteger[255];
 
 	// Initialize factorials
@@ -46,8 +61,12 @@ public final class MathUtil {
 		factorials[0] = factorials[1] = BigInteger.ONE;
 	}
 
-	// Calculates the factorials
-	// returns num!
+	/**
+	 * Calculates the factorials
+	 * 
+	 * @param num
+	 * @return num!
+	 */
 	public static BigInteger factorial(int num) {
 
 		// Error check if there is a negative number involved
@@ -64,7 +83,12 @@ public final class MathUtil {
 
 	// For the minimum values
 
-	// Finds the minimum value of all integers in an array
+	/**
+	 * Finds the minimum value of all integers in an array
+	 * 
+	 * @param array
+	 * @return
+	 */
 	public static int min(int... array) {
 		// Error check if the size is 0
 		if (array.length == 0)
@@ -81,7 +105,12 @@ public final class MathUtil {
 		return minV;
 	}
 
-	// Finds the minimum value of all doubles in an array
+	/**
+	 * Finds the minimum value of all doubles in an array
+	 * 
+	 * @param array
+	 * @return
+	 */
 	public static double min(double... array) {
 		// Error check if the size is 0
 		if (array.length == 0)
@@ -98,7 +127,12 @@ public final class MathUtil {
 		return minV;
 	}
 
-	// Finds the minimum value of all longs in an array
+	/**
+	 * Finds the minimum value of all longs in an array
+	 * 
+	 * @param array
+	 * @return
+	 */
 	public static long min(long... array) {
 		// Error check if the size is 0
 		if (array.length == 0)
@@ -115,7 +149,12 @@ public final class MathUtil {
 		return minV;
 	}
 
-	// Finds the minimum value of all floats in an array
+	/**
+	 * Finds the minimum value of all floats in an array
+	 * 
+	 * @param array
+	 * @return
+	 */
 	public static float min(float... array) {
 		// Error check if the size is 0
 		if (array.length == 0)
@@ -132,7 +171,13 @@ public final class MathUtil {
 		return minV;
 	}
 
-	// Finds the minimum value of all E in an array or collection
+	/**
+	 * Finds the minimum value of all E in an array or collection
+	 * 
+	 * @param <E>
+	 * @param array
+	 * @return
+	 */
 	@SafeVarargs
 	public static <E extends Comparable<E>> E min(E... array) {
 		// Error check if the size is 0
@@ -151,6 +196,13 @@ public final class MathUtil {
 		return minV;
 	}
 
+	/**
+	 * Finds the minimum value of all E in an array or collection
+	 * 
+	 * @param <E>
+	 * @param collection
+	 * @return
+	 */
 	public static <E extends Comparable<E>> E min(Collection<E> collection) {
 		// Error check if the size is 0
 		if (collection.isEmpty())
@@ -171,7 +223,12 @@ public final class MathUtil {
 
 	// For the maximum values
 
-	// Finds the minimum value of all integers in an array
+	/**
+	 * Finds the maximum value of all integers in an array
+	 * 
+	 * @param array
+	 * @return
+	 */
 	public static int max(int... array) {
 		// Error check if the size is 0
 		if (array.length == 0)
@@ -188,7 +245,12 @@ public final class MathUtil {
 		return minV;
 	}
 
-	// Finds the minimum value of all doubles in an array
+	/**
+	 * Finds the maximum value of all doubles in an array
+	 * 
+	 * @param array
+	 * @return
+	 */
 	public static double max(double... array) {
 		// Error check if the size is 0
 		if (array.length == 0)
@@ -205,7 +267,12 @@ public final class MathUtil {
 		return minV;
 	}
 
-	// Finds the minimum value of all longs an array
+	/**
+	 * Finds the maximum value of all longs an array
+	 * 
+	 * @param array
+	 * @return
+	 */
 	public static long max(long... array) {
 		// Error check if the size is 0
 		if (array.length == 0)
@@ -222,7 +289,12 @@ public final class MathUtil {
 		return minV;
 	}
 
-	// Finds the minimum value of all float in an array
+	/**
+	 * Finds the maximum value of all float in an array
+	 * 
+	 * @param array
+	 * @return
+	 */
 	public static float max(float... array) {
 		// Error check if the size is 0
 		if (array.length == 0)
@@ -239,7 +311,13 @@ public final class MathUtil {
 		return minV;
 	}
 
-	// Finds the maximum value of all E in an array
+	/**
+	 * Finds the maximum value of all E in an array
+	 * 
+	 * @param <E>
+	 * @param array
+	 * @return
+	 */
 	@SafeVarargs
 	public static <E extends Comparable<E>> E max(E... array) {
 		// Error check if the size is 0
@@ -258,6 +336,13 @@ public final class MathUtil {
 		return minV;
 	}
 
+	/**
+	 * Finds the maximum value of all E in an array or collection
+	 * 
+	 * @param <E>
+	 * @param collection
+	 * @return
+	 */
 	public static <E extends Comparable<E>> E max(Collection<E> collection) {
 		// Error check if the size is 0
 		if (collection.isEmpty())
@@ -284,7 +369,12 @@ public final class MathUtil {
 		fibonnaci[1] = fibonnaci[2] = BigInteger.ONE;
 	}
 
-	// Calculates fibonnaci O(N) time on first run
+	/**
+	 * Calculates fibonnaci O(N) time on first run
+	 * 
+	 * @param num
+	 * @return
+	 */
 	public static BigInteger fibonnaci(int num) {
 		// Check if value is cached
 		if (fibonnaci[num] != null)

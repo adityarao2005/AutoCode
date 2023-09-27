@@ -8,7 +8,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-// Multi valued Map
+import com.raos.autocode.core.annotations.ClassPreamble;
+
+/**
+ * Multi valued Map
+ * @author aditya
+ *
+ * @param <K>
+ * @param <V>
+ */
+@ClassPreamble(author = "Aditya Rao", date = "2023-07-05")
 public class MultiMap<K, V> extends AbstractMap<K, List<V>> {
 	// Map
 	private Map<K, List<V>> internalMap;
@@ -18,13 +27,19 @@ public class MultiMap<K, V> extends AbstractMap<K, List<V>> {
 		internalMap = new HashMap<>();
 	}
 
-	// Put to the map
+	/**
+	 * Put to the map
+	 */
 	@Override
 	public List<V> put(K key, List<V> value) {
 		return internalMap.put(key, value);
 	}
 
-	// Put a pair into the multi value map
+	/**
+	 * Put a pair into the multi value map
+	 * @param key
+	 * @param value
+	 */
 	public void put(K key, V value) {
 
 		// Internal map
@@ -36,7 +51,11 @@ public class MultiMap<K, V> extends AbstractMap<K, List<V>> {
 		internalMap.get(key).add(value);
 	}
 
-	//
+	/**
+	 * Set value in multi map
+	 * @param key
+	 * @param value
+	 */
 	public void set(K key, V value) {
 		// If the map has the key, then clear the list
 		if (internalMap.containsKey(key))
@@ -45,7 +64,9 @@ public class MultiMap<K, V> extends AbstractMap<K, List<V>> {
 		put(key, value);
 	}
 
-	// Removes value
+	/**
+	 * Removes value
+	 */
 	@Override
 	public boolean remove(Object key, Object value) {
 		if (internalMap.containsKey(key))
@@ -53,7 +74,12 @@ public class MultiMap<K, V> extends AbstractMap<K, List<V>> {
 		return false;
 	}
 
-	// Contains value
+	/**
+	 * Contains value
+	 * @param key
+	 * @param value
+	 * @return
+	 */
 	public boolean containsValue(K key, V value) {
 		if (internalMap.containsKey(key))
 			return internalMap.get(key).contains(value);
@@ -61,16 +87,26 @@ public class MultiMap<K, V> extends AbstractMap<K, List<V>> {
 		return false;
 	}
 
-	// Get entry set
+	/**
+	 * Get entry set
+	 */
 	@Override
 	public Set<Entry<K, List<V>>> entrySet() {
 		return internalMap.entrySet();
 	}
 
+	/**
+	 * Get optional
+	 * @param key
+	 * @return
+	 */
 	public Optional<V> getOptional(K key) {
 		return get(key).stream().findFirst();
 	}
 
+	/**
+	 * Get
+	 */
 	@Override
 	public List<V> get(Object key) {
 		return internalMap.get(key);

@@ -8,7 +8,15 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-// Represents a table or resultset
+import com.raos.autocode.core.annotations.ClassPreamble;
+
+/**
+ * Represents a table or resultset
+ * 
+ * @author aditya
+ *
+ */
+@ClassPreamble(author = "Aditya Rao", date = "2023-07-05")
 public class Table implements Iterable<Map<String, Object>> {
 
 	// Table types

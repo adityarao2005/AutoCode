@@ -3,7 +3,16 @@ package com.raos.autocode.core.util;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-// Type token, used to capture generic types during runtime
+import com.raos.autocode.core.annotations.ClassPreamble;
+
+/**
+ * Type token, used to capture generic types during runtime
+ * 
+ * @author aditya
+ *
+ * @param <T>
+ */
+@ClassPreamble(author = "Aditya Rao", date = "2023-07-05")
 public abstract class TypeToken<T> {
 	private Type genericType;
 
@@ -11,7 +20,7 @@ public abstract class TypeToken<T> {
 		this.genericType = getSuperclassTypeParameter(this.getClass());
 	}
 
-	static Type getSuperclassTypeParameter(Class<?> subclass) {
+	private static Type getSuperclassTypeParameter(Class<?> subclass) {
 		Type superclass = subclass.getGenericSuperclass();
 		if (superclass instanceof Class) {
 			throw new RuntimeException("Missing type parameter.");

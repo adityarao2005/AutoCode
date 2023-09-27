@@ -18,10 +18,22 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BooleanSupplier;
 
-// Full credit for designing this class goes to Oracle Developers and OpenJDK developers
-// CODE TAKEN FROM JDK 16
-public class ProxyUtil {
-	// For Java 11 Users... i scraped the java 16 api to get this stuff
+import com.raos.autocode.core.annotations.ClassPreamble;
+
+/**
+ * Utilities for proxy
+ * 
+ * Full credit for designing this class goes to Oracle Developers and OpenJDK
+ * developers CODE TAKEN FROM JDK 16
+ * 
+ * @author aditya
+ *
+ */
+// For Java 11 Users... i scraped the java 16 api to get this stuff
+@ClassPreamble(author = "Authors of Oracle JDK 16", date = "Unknown")
+public final class ProxyUtil {
+	private ProxyUtil() {
+	}
 
 	/**
 	 * A cache of Method -> MethodHandle for default methods.
