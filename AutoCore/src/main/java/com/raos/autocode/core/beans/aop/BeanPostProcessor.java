@@ -2,7 +2,6 @@ package com.raos.autocode.core.beans.aop;
 
 import com.raos.autocode.core.PostProcessor;
 import com.raos.autocode.core.annotations.ClassPreamble;
-import com.raos.autocode.core.beans.property.PropertyManager;
 import com.raos.autocode.core.context.CDISupport;
 
 /**
@@ -23,5 +22,5 @@ public interface BeanPostProcessor extends PostProcessor {
 	 * Add post processing control after construction along with CDI support
 	 * @param bean
 	 */
-	void process(PropertyManager bean, CDISupport cdi);
+	void process(Object bean, CDISupport cdi);
 }

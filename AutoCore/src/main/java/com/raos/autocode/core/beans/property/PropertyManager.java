@@ -1,5 +1,7 @@
 package com.raos.autocode.core.beans.property;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -93,5 +95,16 @@ public interface PropertyManager {
 				return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Checks if a particular method is for a property
+	 * 
+	 * @param method
+	 * @return
+	 */
+	public static boolean isPropertyMethod(Method method) {
+		return method.getReturnType().isAssignableFrom(Property.class) && method.getParameterCount() == 0
+				&& !Modifier.isStatic(method.getModifiers());
 	}
 }

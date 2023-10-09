@@ -1,11 +1,13 @@
 package com.raos.autocode.core.beans.aop;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
 import com.raos.autocode.core.Aspect;
 import com.raos.autocode.core.PostProcessor;
 import com.raos.autocode.core.PreProcessor;
 import com.raos.autocode.core.annotations.ClassPreamble;
+import com.raos.autocode.core.context.CDISupport;
 import com.raos.autocode.core.util.ObjectUtil;
 
 /**
@@ -16,7 +18,10 @@ import com.raos.autocode.core.util.ObjectUtil;
  */
 @ClassPreamble(author = "Aditya Rao", date = "2023-09-15")
 public interface BeanAspect extends Aspect {
-
+	
+	
+	public static final String CLASS_RESOURCE_VALUE = "class-resource#...";
+	
 	/**
 	 * Adds PreProcessor only if it is a BeanPreProcessor
 	 */
@@ -49,11 +54,42 @@ public interface BeanAspect extends Aspect {
 	void addPreProcessor(BeanPreProcessor processor);
 
 	/**
+	 * Applies the pre-processors onto a class
+	 * 
+	 * @param beanClass
+	 * @return
+	 */
+	Map<Method, Map<String, String>> applyPreProcessors(Class<?> beanClass);
+
+	/**
+	 * Sets the property generator for this aspect
+	 * 
+	 * @param generator
+	 */
+	void setBeanPropertyGenerator(BeanPropertyGenerator generator);
+
+	/**
+	 * Gets the property generator for this aspect
+	 * 
+	 * @param generator
+	 */
+	BeanPropertyGenerator getBeanPropertyGenerator();
+
+	/**
 	 * Add bean post processor
 	 * 
 	 * @param processor
 	 */
 	void addPostProcessor(BeanPostProcessor processor);
+
+	/**
+	 * 
+	 * Applies the pre-processors onto a bean
+	 * 
+	 * @param bean
+	 * @param support
+	 */
+	void applyPostProcessors(Object bean, CDISupport support);
 
 	/**
 	 * Returns Aspect wide resources based on the bean type passed

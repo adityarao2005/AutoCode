@@ -1,10 +1,10 @@
 package com.raos.autocode.core.beans.aop;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import com.raos.autocode.core.PreProcessor;
 import com.raos.autocode.core.annotations.ClassPreamble;
-import com.raos.autocode.core.beans.property.Property;
 
 /**
  * Adds Pre-processing to beans, useful for bean construction and customization
@@ -30,6 +30,6 @@ public interface BeanPreProcessor extends PreProcessor {
 	 * @param propertyMethod
 	 * @return
 	 */
-	Property<?> process(Class<?> beanClass, Method propertyMethod);
+	Map<String, String> process(Class<?> beanClass, Method propertyMethod);
 
 }
