@@ -17,7 +17,7 @@ import com.raos.autocode.core.design.builder.Builder;
  *  - Registered Services
  * DI (IoC) Container
  * - Context registry
- * Dependency injection (constructor injection, parameter injection (if not required), setter injection of interface injection) …
+ * Dependency injection (constructor injection, parameter injection (if not required), setter injection of interface injection)
  * - Beans which depend on other values will be injected on startup
  * Environment Variables
  * 
