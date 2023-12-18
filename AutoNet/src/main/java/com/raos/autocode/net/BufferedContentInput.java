@@ -18,29 +18,20 @@ import com.raos.autocode.core.annotations.ClassPreamble;
 public interface BufferedContentInput extends BinaryContentInput {
 
 	/**
+	 * Reads content in form of a chunck or a buffer
 	 * 
 	 * @param length
 	 * @return
 	 */
-	public default boolean doRead(byte[] content) {
-
-		// while there is still more, read
-		int i = 0;
-		while (i < content.length && hasNext()) {
-			content[i] = doRead();
-			i++;
-		}
-
-		return hasNext();
-
-	}
+	public boolean doRead(byte[] content);
 
 	/**
+	 * Converts to Stream of Integers or bytes
 	 * 
 	 * @return
 	 */
-	public default Stream<Byte> streamContent() {
-		return Stream.iterate(doRead(), t -> this.hasNext(), t -> doRead());
+	public default Stream<Integer> streamContent() {
+		return Stream.generate(this::doRead).takeWhile(i -> i != -1);
 	}
 
 	/**

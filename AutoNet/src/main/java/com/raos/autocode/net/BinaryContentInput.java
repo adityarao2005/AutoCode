@@ -9,6 +9,6 @@ import com.raos.autocode.core.annotations.ClassPreamble;
  *
  */
 @ClassPreamble(author = "Aditya Rao", date = "Oct. 9, 2023")
-public interface BinaryContentInput extends ContentInput<Byte> {
+public interface BinaryContentInput extends ContentInput<Integer> {
 
 }

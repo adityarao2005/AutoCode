@@ -13,6 +13,7 @@ import com.raos.autocode.core.annotations.ClassPreamble;
 public interface ContentOutput<T> {
 
 	/**
+	 * Performs the writing operation
 	 * 
 	 * @param output
 	 */
