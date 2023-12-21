@@ -9,6 +9,6 @@ import com.raos.autocode.core.annotations.ClassPreamble;
  *
  */
 @ClassPreamble(author = "Aditya Rao", date = "Dec. 17, 2023")
-public interface IService {
+public interface IService extends AutoCloseable {
 
 }

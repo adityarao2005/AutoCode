@@ -4,6 +4,7 @@ import java.util.List;
 import java.lang.reflect.Type;
 import java.lang.reflect.ParameterizedType;
 
+// TODO: Add more ways to get application contexts (xml, json, yml, properties)
 // TODO: Use this as an alternative to @BeanProperty(type = <>)
 public class GenericDecoder {
 	public static void main(String[] args) throws Exception {

@@ -9,6 +9,7 @@ import com.raos.autocode.core.beans.IServiceProvider;
 import com.raos.autocode.core.context.DIRegistery.BeanDescriptor;
 import com.raos.autocode.core.design.Factory;
 import com.raos.autocode.core.design.builder.Builder;
+import com.raos.autocode.core.util.ExceptionUtil;
 
 /**
  * Represents a context that is present application wide
@@ -59,7 +60,7 @@ public final class ApplicationContext implements Context {
 	 * 
 	 * @param contexts
 	 */
-	public void initContext(List<Context> contexts) {
+	public void initContext(List<Context> contexts) throws Exception {
 		// Initialize the fields
 		this.environmentalVariables = new Properties();
 		this.factories = new ArrayList<>();
@@ -78,6 +79,9 @@ public final class ApplicationContext implements Context {
 			for (BeanDescriptor descriptor : context.getRegistry()) {
 				registry.putBean(descriptor.getName(), descriptor.getObject());
 			}
+
+			// Close the context
+			context.close();
 		}
 	}
 
@@ -109,5 +113,21 @@ public final class ApplicationContext implements Context {
 	@Override
 	public DIRegistery getRegistry() {
 		return registry;
+	}
+
+	@Override
+	public void close() throws Exception {
+		// Clear the environmental variables
+		environmentalVariables.clear();
+		// Clear the factories
+		factories.clear();
+		// Clear the builders
+		builders.clear();
+		// Close the service providers
+		serviceProviders.forEach(ExceptionUtil.<IServiceProvider<?>>throwSilently(IServiceProvider::close));
+		// clear the service providers
+		serviceProviders.clear();
+		// Close the registry
+		registry.close();
 	}
 }

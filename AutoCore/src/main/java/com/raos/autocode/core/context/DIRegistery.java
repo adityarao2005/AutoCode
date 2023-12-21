@@ -12,7 +12,7 @@ import com.raos.autocode.core.annotations.ClassPreamble;
  *
  */
 @ClassPreamble(author = "Aditya Rao", date = "Dec. 17, 2023")
-public interface DIRegistery extends Iterable<DIRegistery.BeanDescriptor> {
+public interface DIRegistery extends Iterable<DIRegistery.BeanDescriptor>, AutoCloseable {
 
 	/**
 	 * Gets a bean registered with a certain class. There should only be one object

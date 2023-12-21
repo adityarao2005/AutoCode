@@ -26,7 +26,7 @@ import com.raos.autocode.core.design.builder.Builder;
  *
  */
 @ClassPreamble(author = "Aditya Rao", date = "Dec. 17, 2023")
-public interface Context {
+public interface Context extends AutoCloseable {
 
 	/**
 	 * @return get the environmental variables
@@ -56,4 +56,6 @@ public interface Context {
 	 * @return
 	 */
 	DIRegistery getRegistry();
+	
+
 }

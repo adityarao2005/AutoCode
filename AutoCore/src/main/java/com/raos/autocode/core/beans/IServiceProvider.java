@@ -9,7 +9,7 @@ import com.raos.autocode.core.annotations.ClassPreamble;
  *
  */
 @ClassPreamble(author = "Aditya Rao", date = "Dec. 17, 2023")
-public interface IServiceProvider<T extends IService> {
+public interface IServiceProvider<T extends IService> extends AutoCloseable {
 
 	/**
 	 * Returns a service
