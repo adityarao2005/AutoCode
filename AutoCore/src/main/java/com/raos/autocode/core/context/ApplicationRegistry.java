@@ -17,7 +17,7 @@ import com.raos.autocode.core.application.ApplicationException;
  *
  */
 @ClassPreamble(author = "Aditya Rao", date = "Dec. 20, 2023")
-class ApplicationRegistry implements DIRegistery {
+class ApplicationRegistry implements DIRegistry {
 	// Default name
 	public static final String DEFAULT_NAME = "##DEFAULT##";
 	// Default class
@@ -57,7 +57,7 @@ class ApplicationRegistry implements DIRegistery {
 
 	@Override
 	public <T> Optional<T> getBean(Class<T> clazz, String name) {
-		// Get the identity from the name
+		// Get the bean from the name and class
 		return registries
 				// Stream the list
 				.stream()
@@ -77,8 +77,17 @@ class ApplicationRegistry implements DIRegistery {
 	@Override
 	public <T> Optional<T> getBean(String name) {
 
-		// Get the bean and cast
-		return (Optional<T>) getBean(DEFAULT_CLASS, name);
+		// Get the bean from the name
+		return (Optional<T>) registries
+				// Stream the list
+				.stream()
+				// Filter the name
+				.filter(bean -> bean.getName().equals(name) || name.equals(DEFAULT_NAME))
+				// Filter the class
+				// Map the descriptor to the objects
+				.map(BeanDescriptor::getObject)
+				// Find any
+				.findAny();
 	}
 
 	@Override
@@ -96,7 +105,18 @@ class ApplicationRegistry implements DIRegistery {
 	@Override
 	public boolean hasBean(Class<?> clazz) {
 		// Check if the bean is present
-		return getBean(clazz).isPresent();
+		return registries
+				// Stream the list
+				.stream()
+				// Filter the name
+				.filter(bean -> bean.getName().equals(DEFAULT_NAME))
+				// Filter the class
+				// Map the descriptor to the objects
+				.map(BeanDescriptor::getObject)
+				// Find any
+				.findAny()
+				// check if present
+				.isPresent();
 	}
 
 	@Override
@@ -135,7 +155,21 @@ class ApplicationRegistry implements DIRegistery {
 
 	@Override
 	public void removeBean(String name) {
-		removeBean(name, DEFAULT_CLASS);
+		// Check if the bean with name is present
+		if (!hasBean(name))
+			throw new ApplicationException(
+					String.format("Unable to remove bean. Bean with name \'%s\' does not exist", name));
+
+		// Remove name
+		registries.remove(registries
+				// Stream the list
+				.stream()
+				// Filter the name
+				.filter(bean -> bean.getName().equals(name) || name.equals(DEFAULT_NAME))
+				// Find the values
+				.findAny()
+				// Get the values
+				.get());
 
 	}
 
@@ -144,7 +178,8 @@ class ApplicationRegistry implements DIRegistery {
 		// Check if the bean with name is present
 		if (!hasBean(name, clazz))
 			throw new ApplicationException(
-					String.format("Unable to remove bean. Bean with name \'%s\' does not exist", name));
+					String.format("Unable to remove bean. Bean with name \'%s\' and class \'%s\' does not exist", name,
+							clazz.getName()));
 
 		// Remove name
 		registries.remove(registries
@@ -163,8 +198,21 @@ class ApplicationRegistry implements DIRegistery {
 
 	@Override
 	public void removeBean(Class<?> clazz) {
+		// Check if the bean with name is present
+		if (!hasBean(clazz))
+			throw new ApplicationException(
+					String.format("Unable to remove bean. Bean with class \'%s\' does not exist", clazz));
 		// Remove bean
-		removeBean(DEFAULT_NAME, clazz);
+		// Remove name
+		registries.remove(registries
+				// Stream the list
+				.stream()
+				// Filter the class
+				.filter(bean -> bean.getClazz().equals(clazz) || clazz.equals(DEFAULT_CLASS))
+				// Find the values
+				.findAny()
+				// Get the values
+				.get());
 
 	}
 

@@ -1,5 +1,7 @@
 package com.raos.autocode.core.application;
 
+import java.util.logging.Logger;
+
 import com.raos.autocode.core.annotations.ClassPreamble;
 import com.raos.autocode.core.context.ApplicationContext;
 
@@ -13,6 +15,15 @@ import com.raos.autocode.core.context.ApplicationContext;
  */
 @ClassPreamble(author = "Aditya Rao", date = "Dec. 20, 2023")
 public interface Application {
+	/**
+	 * Represents the arguments provided by the console
+	 */
+	String CMD_ARGS_KEY = "CMD_ARGS";
+	/**
+	 * Delimits the arguments provided by the console
+	 */
+	String ARGS_DELIMETER = ";";
+	
 
 	/**
 	 * Start the application given the context. Main application logic should begin here
@@ -51,6 +62,8 @@ public interface Application {
 
 			// Create the application context
 			ApplicationContext context = ApplicationContext.getApplicationContext();
+			// Add the command line args to the environment variables
+			context.getEnvironmentalVariables().setProperty(CMD_ARGS_KEY, String.join(";", args));
 
 			// Initialize the application
 			application.init(context);
@@ -63,9 +76,17 @@ public interface Application {
 			context.close();
 
 		} catch (Exception e) {
-			throw new ApplicationException("Cannot instantiate the application class: " + runnerClass.getName(), e);
+			throw new ApplicationException("Cannot run the application class: " + runnerClass.getName(), e);
 		}
 
+	}
+	
+	/**
+	 * Return an application logger
+	 * @return
+	 */
+	default Logger getLogger() {
+		return Logger.getLogger(Application.class.getName());
 	}
 
 }

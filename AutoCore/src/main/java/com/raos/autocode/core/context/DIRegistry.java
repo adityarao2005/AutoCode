@@ -13,7 +13,7 @@ import com.raos.autocode.core.annotations.ClassPreamble;
  *
  */
 @ClassPreamble(author = "Aditya Rao", date = "Dec. 17, 2023")
-public interface DIRegistery extends Iterable<DIRegistery.BeanDescriptor>, AutoCloseable {
+public interface DIRegistry extends Iterable<DIRegistry.BeanDescriptor>, AutoCloseable {
 
 	/**
 	 * Gets a bean registered with a certain class. There should only be one object
@@ -105,6 +105,16 @@ public interface DIRegistery extends Iterable<DIRegistery.BeanDescriptor>, AutoC
 	 * @return
 	 */
 	boolean hasBean(Class<?> clazz);
+	
+	/**
+	 * Replace bean by removing a bean and put a new bean
+	 * @param name
+	 * @param value
+	 */
+	default void replaceBean(String name, Object value) {
+		removeBean(name);
+		putBean(name, value);
+	}
 
 	/**
 	 * Represents a description of a bean in this registry

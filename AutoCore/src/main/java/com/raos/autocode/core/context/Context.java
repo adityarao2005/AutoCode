@@ -80,7 +80,7 @@ public interface Context extends AutoCloseable {
 	 * Return the registry
 	 * @return
 	 */
-	DIRegistery getRegistry();
+	DIRegistry getRegistry();
 	
 
 }

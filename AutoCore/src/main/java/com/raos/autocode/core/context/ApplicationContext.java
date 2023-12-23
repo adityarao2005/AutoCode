@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.raos.autocode.core.annotations.ClassPreamble;
 import com.raos.autocode.core.beans.IService;
 import com.raos.autocode.core.beans.IServiceProvider;
-import com.raos.autocode.core.context.DIRegistery.BeanDescriptor;
+import com.raos.autocode.core.context.DIRegistry.BeanDescriptor;
 import com.raos.autocode.core.design.Factory;
 import com.raos.autocode.core.design.builder.Builder;
 import com.raos.autocode.core.util.ExceptionUtil;
@@ -34,7 +34,7 @@ public final class ApplicationContext implements Context {
 	// Service Providers
 	private Map<Class<?>, IServiceProvider<?>> serviceProviders;
 	// IoC Registry
-	private DIRegistery registry;
+	private DIRegistry registry;
 
 	/**
 	 * Returns the applicaiton context
@@ -45,7 +45,7 @@ public final class ApplicationContext implements Context {
 		// Check if null
 		if (applicationContext == null) {
 			// Synchronize the context
-			synchronized (applicationContext) {
+			synchronized (ApplicationContext.class) {
 				// check if null
 				if (applicationContext == null) {
 					applicationContext = new ApplicationContext();
@@ -62,8 +62,15 @@ public final class ApplicationContext implements Context {
 	 */
 	private ApplicationContext() {
 		// Prevent reflection
-		if (applicationContext == null)
+		if (applicationContext != null)
 			throw new RuntimeException("HahHa nice try");
+
+		// Add thread safety
+		this.environmentalVariables = new Properties();
+		this.factories = new ConcurrentHashMap<>();
+		this.builders = new ConcurrentHashMap<>();
+		this.serviceProviders = new ConcurrentHashMap<>();
+		this.registry = new ApplicationRegistry();
 	}
 
 	/**
@@ -73,13 +80,6 @@ public final class ApplicationContext implements Context {
 	 */
 	public void initContext(List<Context> contexts) throws Exception {
 		// Initialize the fields
-		// Add thread safety
-		this.environmentalVariables = new Properties();
-		this.factories = new ConcurrentHashMap<>();
-		this.builders = new ConcurrentHashMap<>();
-		this.serviceProviders = new ConcurrentHashMap<>();
-		this.registry = new ApplicationRegistry();
-
 		for (Context context : contexts) {
 			// Add all the values from the other contexts
 			context.getEnvironmentalVariables().forEach(environmentalVariables::put);
@@ -95,6 +95,8 @@ public final class ApplicationContext implements Context {
 			// Close the context
 			context.close();
 		}
+		
+		
 	}
 
 	// Return environmental variables
@@ -144,7 +146,7 @@ public final class ApplicationContext implements Context {
 
 	// Return registry
 	@Override
-	public DIRegistery getRegistry() {
+	public DIRegistry getRegistry() {
 		return registry;
 	}
 
