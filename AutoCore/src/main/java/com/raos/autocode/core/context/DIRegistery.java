@@ -1,5 +1,6 @@
 package com.raos.autocode.core.context;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import com.raos.autocode.core.annotations.ClassPreamble;
@@ -104,9 +105,10 @@ public interface DIRegistery extends Iterable<DIRegistery.BeanDescriptor>, AutoC
 	 * @return
 	 */
 	boolean hasBean(Class<?> clazz);
-	
+
 	/**
 	 * Represents a description of a bean in this registry
+	 * 
 	 * @author aditya
 	 * @date Dec. 17, 2023
 	 *
@@ -152,6 +154,33 @@ public interface DIRegistery extends Iterable<DIRegistery.BeanDescriptor>, AutoC
 
 		public void setName(String name) {
 			this.name = name;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(clazz, name, object);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			BeanDescriptor other = (BeanDescriptor) obj;
+			return Objects.equals(clazz, other.clazz) && Objects.equals(name, other.name)
+					&& Objects.equals(object, other.object);
+		}
+		
+		/**
+		 * Copy the descriptor
+		 * @param other
+		 * @return
+		 */
+		public static BeanDescriptor copy(BeanDescriptor other) {
+			return new BeanDescriptor(other.getObject(), other.getClazz(), other.getName());
 		}
 
 	}

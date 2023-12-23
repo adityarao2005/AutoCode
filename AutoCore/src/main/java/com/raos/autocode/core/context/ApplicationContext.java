@@ -54,6 +54,15 @@ public final class ApplicationContext implements Context {
 		// return the application context
 		return applicationContext;
 	}
+	
+	/**
+	 * Private constructor
+	 */
+	private ApplicationContext() {
+		// Prevent reflection
+		if (applicationContext == null)
+			throw new RuntimeException("HahHa nice try");
+	}
 
 	/**
 	 * Initialize and load the contexts into this container
@@ -130,4 +139,6 @@ public final class ApplicationContext implements Context {
 		// Close the registry
 		registry.close();
 	}
+	
+	
 }
