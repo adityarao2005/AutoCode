@@ -1,10 +1,10 @@
 package com.raos.autocode.core.context;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.raos.autocode.core.annotations.ClassPreamble;
 import com.raos.autocode.core.application.ApplicationException;
@@ -30,8 +30,8 @@ class ApplicationRegistry implements DIRegistery {
 	 * Create the application registry
 	 */
 	public ApplicationRegistry() {
-		// Create the maps
-		registries = new ArrayList<>();
+		// Create the list (thread safety)
+		registries = new CopyOnWriteArrayList<>();
 	}
 
 	@Override

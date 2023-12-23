@@ -1,9 +1,10 @@
 package com.raos.autocode.core.context;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import com.raos.autocode.core.annotations.ClassPreamble;
+import com.raos.autocode.core.beans.IService;
 import com.raos.autocode.core.beans.IServiceProvider;
 import com.raos.autocode.core.design.Factory;
 import com.raos.autocode.core.design.builder.Builder;
@@ -37,19 +38,43 @@ public interface Context extends AutoCloseable {
 	 * Return the registered factories
 	 * @return
 	 */
-	List<Factory<?>> getFactories();
+	Map<Class<?>, Factory<?>> getFactories();
+	
+	/**
+	 * Get the factory with respect to a class
+	 * @param <T>
+	 * @param clazz
+	 * @return
+	 */
+	<T> Factory<T> getFactory(Class<T> clazz);
 	
 	/**
 	 * Return the registered builders
 	 * @return
 	 */
-	List<Builder<?>> getBuilders();
+	Map<Class<?>, Builder<?>> getBuilders();
+	
+	/**
+	 * Get the builder with respect to a class
+	 * @param <T>
+	 * @param clazz
+	 * @return
+	 */
+	<T> Builder<T> getBuilders(Class<T> clazz);
 	
 	/**
 	 * Return the registered service providers
 	 * @return
 	 */
-	List<IServiceProvider<?>> getServiceProviders();
+	Map<Class<?>, IServiceProvider<?>> getServiceProviders();
+
+	/**
+	 * Get the service providers with respect to the class
+	 * @param <T>
+	 * @param clazz
+	 * @return
+	 */
+	<T extends IService> IServiceProvider<T> getServiceProviders(Class<T> clazz);
 	
 	/**
 	 * Return the registry

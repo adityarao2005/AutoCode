@@ -1,10 +1,12 @@
 package com.raos.autocode.core.context;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.raos.autocode.core.annotations.ClassPreamble;
+import com.raos.autocode.core.beans.IService;
 import com.raos.autocode.core.beans.IServiceProvider;
 import com.raos.autocode.core.context.DIRegistery.BeanDescriptor;
 import com.raos.autocode.core.design.Factory;
@@ -26,11 +28,11 @@ public final class ApplicationContext implements Context {
 	// environmental variables
 	private Properties environmentalVariables;
 	// Factories
-	private List<Factory<?>> factories;
+	private Map<Class<?>, Factory<?>> factories;
 	// Builders
-	private List<Builder<?>> builders;
+	private Map<Class<?>, Builder<?>> builders;
 	// Service Providers
-	private List<IServiceProvider<?>> serviceProviders;
+	private Map<Class<?>, IServiceProvider<?>> serviceProviders;
 	// IoC Registry
 	private DIRegistery registry;
 
@@ -54,7 +56,7 @@ public final class ApplicationContext implements Context {
 		// return the application context
 		return applicationContext;
 	}
-	
+
 	/**
 	 * Private constructor
 	 */
@@ -71,18 +73,19 @@ public final class ApplicationContext implements Context {
 	 */
 	public void initContext(List<Context> contexts) throws Exception {
 		// Initialize the fields
+		// Add thread safety
 		this.environmentalVariables = new Properties();
-		this.factories = new ArrayList<>();
-		this.builders = new ArrayList<>();
-		this.serviceProviders = new ArrayList<>();
-		// this.registry = new DIRegistry();
+		this.factories = new ConcurrentHashMap<>();
+		this.builders = new ConcurrentHashMap<>();
+		this.serviceProviders = new ConcurrentHashMap<>();
+		this.registry = new ApplicationRegistry();
 
 		for (Context context : contexts) {
 			// Add all the values from the other contexts
 			context.getEnvironmentalVariables().forEach(environmentalVariables::put);
-			context.getFactories().forEach(factories::add);
-			context.getBuilders().forEach(builders::add);
-			context.getServiceProviders().forEach(serviceProviders::add);
+			context.getFactories().forEach(factories::put);
+			context.getBuilders().forEach(builders::put);
+			context.getServiceProviders().forEach(serviceProviders::put);
 
 			// Pour the values from the descriptor into this context
 			for (BeanDescriptor descriptor : context.getRegistry()) {
@@ -102,20 +105,41 @@ public final class ApplicationContext implements Context {
 
 	// Return factories
 	@Override
-	public List<Factory<?>> getFactories() {
+	public Map<Class<?>, Factory<?>> getFactories() {
 		return factories;
+	}
+
+	// Get the factory from the class
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> Factory<T> getFactory(Class<T> clazz) {
+		return (Factory<T>) builders.get(clazz);
 	}
 
 	// Return builders
 	@Override
-	public List<Builder<?>> getBuilders() {
+	public Map<Class<?>, Builder<?>> getBuilders() {
 		return builders;
+	}
+
+	// Get the builder from the class
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> Builder<T> getBuilders(Class<T> clazz) {
+		return (Builder<T>) builders.get(clazz);
 	}
 
 	// Return service providers
 	@Override
-	public List<IServiceProvider<?>> getServiceProviders() {
+	public Map<Class<?>, IServiceProvider<?>> getServiceProviders() {
 		return serviceProviders;
+	}
+
+	// Get the factory from the class
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends IService> IServiceProvider<T> getServiceProviders(Class<T> clazz) {
+		return (IServiceProvider<T>) serviceProviders.get(clazz);
 	}
 
 	// Return registry
@@ -133,12 +157,11 @@ public final class ApplicationContext implements Context {
 		// Clear the builders
 		builders.clear();
 		// Close the service providers
-		serviceProviders.forEach(ExceptionUtil.<IServiceProvider<?>>throwSilently(IServiceProvider::close));
+		serviceProviders.values().forEach(ExceptionUtil.<IServiceProvider<?>>throwSilently(IServiceProvider::close));
 		// clear the service providers
 		serviceProviders.clear();
 		// Close the registry
 		registry.close();
 	}
-	
-	
+
 }
