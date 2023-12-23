@@ -14,8 +14,8 @@ public class TestApplication extends ConsoleApplication {
 		// Call the super method
 		super.init(context);
 
-		// TEst the context and dependency injection
-		Tester.testRegistryPutMethod(context);
+		// Test the context and dependency injection
+		DIRegistryTester.testRegistryPutMethod(context);
 
 	}
 
@@ -24,9 +24,9 @@ public class TestApplication extends ConsoleApplication {
 	public void start(ApplicationContext context) throws Exception {
 
 		System.out.println("Test within TestApplication.start method: ");
-		Tester.testRegistryGetMethods(context);
+		DIRegistryTester.testRegistryGetMethods(context);
 		// Run program from Runner
-		Tester.run();
+		DIRegistryTester.run();
 
 	}
 

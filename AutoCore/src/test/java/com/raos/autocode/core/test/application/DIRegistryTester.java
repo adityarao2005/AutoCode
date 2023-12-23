@@ -9,16 +9,16 @@ import com.raos.autocode.core.context.ApplicationContext;
 import com.raos.autocode.core.context.DIRegistry;
 
 @ClassPreamble(author = "Aditya Rao", date = "Dec. 22, 2023")
-public class Tester {
+public class DIRegistryTester {
 
 	public static void run() {
 		// Get the context
 		System.out.println("Test within TestApplication.run method: ");
 		ApplicationContext context = ApplicationContext.getApplicationContext();
 		// Test from another method
-		Tester.testRegistryGetMethods(context);
-		Tester.testRegistryRemoveMethods(context);
-		Tester.testRegistryGetMethods(context);
+		DIRegistryTester.testRegistryGetMethods(context);
+		DIRegistryTester.testRegistryRemoveMethods(context);
+		DIRegistryTester.testRegistryGetMethods(context);
 	}
 
 	@TestCase("Test the put method")
