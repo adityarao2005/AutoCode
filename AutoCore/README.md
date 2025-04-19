@@ -41,3 +41,20 @@ Current version where we are at:
     - **Context and Dependency Injection not defined**
  - Not added PseudoObjects/Prototype Objects yet
  - Many Utility classes created
+
+One of the goals, redesign how we think of data. Observe:
+```java
+public interface User {
+	Property<String> name();
+	Property<Date> dob();
+	ListProperty<Address> addresses();
+	MapProperty<SocialPlatform, String> handles();
+
+	default ReadOnlyProperty<Integer> age() {
+		return dob().view((date) => {
+			return Date.now().getYear() - date.getYear();
+		});
+	}
+}
+```
+Remove boilerplate for classes meant only for data and potentially support easier persistence and observability.
